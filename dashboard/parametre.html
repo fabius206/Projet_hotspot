@@ -50,33 +50,59 @@
       </div>
     </div>
 
-    <div class="card card-large">
-      <h3 style="margin-bottom:6px;">Compte administrateur</h3>
-      <p class="hint" style="margin-top:0;">Modifiez le mot de passe de connexion au back-office.</p>
+    <div class="tabs">
+      <button type="button" class="tab active" data-tab="profil">Profil</button>
+      <button type="button" class="tab" data-tab="securite">Sécurité</button>
+    </div>
 
-      <div id="message" class="error-banner" style="display:none;"></div>
+    <div id="tab-profil" class="tab-panel active">
+      <div class="card card-large">
+        <h3 style="margin-bottom:6px;">Profil</h3>
+        <p class="hint" style="margin-top:0;">Nom affiché de l'administrateur du back-office.</p>
 
-      <form id="form-password">
-        <div class="form-grid">
-          <div class="field">
-            <label for="username">Identifiant admin</label>
-            <input type="text" id="username" autocomplete="username" required>
+        <div id="message-nom" class="error-banner" style="display:none;"></div>
+
+        <form id="form-nom">
+          <div class="form-grid form-grid-2">
+            <div class="field">
+              <label for="nom-admin">Nom de l'administrateur</label>
+              <input type="text" id="nom-admin" required minlength="3">
+            </div>
           </div>
-          <div class="field">
-            <label for="current">Mot de passe actuel</label>
-            <input type="password" id="current" autocomplete="current-password" required>
+          <button type="submit" class="btn btn-primary">Enregistrer le nom</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="tab-securite" class="tab-panel">
+      <div class="card card-large">
+        <h3 style="margin-bottom:6px;">Sécurité</h3>
+        <p class="hint" style="margin-top:0;">Modifiez le mot de passe de connexion au back-office.</p>
+
+        <div id="message" class="error-banner" style="display:none;"></div>
+
+        <form id="form-password">
+          <div class="form-grid">
+            <div class="field">
+              <label for="username">Identifiant admin</label>
+              <input type="text" id="username" autocomplete="username" required>
+            </div>
+            <div class="field">
+              <label for="current">Mot de passe actuel</label>
+              <input type="password" id="current" autocomplete="current-password" required>
+            </div>
+            <div class="field">
+              <label for="new">Nouveau mot de passe</label>
+              <input type="password" id="new" autocomplete="new-password" required minlength="6">
+            </div>
+            <div class="field">
+              <label for="confirm">Confirmer</label>
+              <input type="password" id="confirm" autocomplete="new-password" required minlength="6">
+            </div>
           </div>
-          <div class="field">
-            <label for="new">Nouveau mot de passe</label>
-            <input type="password" id="new" autocomplete="new-password" required minlength="6">
-          </div>
-          <div class="field">
-            <label for="confirm">Confirmer</label>
-            <input type="password" id="confirm" autocomplete="new-password" required minlength="6">
-          </div>
-        </div>
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
-      </form>
+          <button type="submit" class="btn btn-primary">Enregistrer</button>
+        </form>
+      </div>
     </div>
 
   </main>
