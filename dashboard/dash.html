@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=   nu822L vice-width, initial-scale=1.0">
+<title>Tableau de bord — Hotspot Diego</title>
+<link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+<div class="tout">
+  <aside class="deuxieme">
+    <div class="title">Hotspot<span style="color:var(--coral)">Diego</span>
+      <small>Affichage</small>
+    </div>
+    <nav>
+      <a href="dashboard.html" class="active">Tableau de bord</a>
+      <a href="vouchers.html">Codes d'accès</a>
+      <a href="plans.html">Offres</a>
+      <a href="../index.html">Déconnexion</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+
+    <div class="topbar">
+
+      <div>
+        <h1>Tableau de bord</h1>
+        <div class="subtitle">Vue d'ensemble de l'activité hotspot — Diégo-Suarez</div>
+      </div>
+      
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="label">Vouchers non utilisés</div>
+        <div class="value" id="stat-non-utilise">—</div>
+      </div>
+      <div class="stat-card accent">
+        <div class="label">Sessions actives</div>
+        <div class="value" id="stat-actif">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Vouchers expirés</div>
+        <div class="value" id="stat-expire">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Total généré</div>
+        <div class="value" id="stat-total">—</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-bottom:14px;">État des routeurs</h3>
+      <table>
+        <thead>
+          <tr><th>Nom</th><th>Adresse IP</th><th>Site</th><th>Statut</th><th></th></tr>
+        </thead>
+      </table>
+    </div>
+  </main>
+</div>
+</body>
+</html>

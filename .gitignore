@@ -1,0 +1,10 @@
+# Fichiers systeme
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Logs
+*.log
+
+# Configuration locale / secrets
+.env
