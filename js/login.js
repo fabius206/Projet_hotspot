@@ -12,7 +12,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
   btn.classList.add('loading');
 
   try {
-    const response = await fetch('api/login.php', {
+    const response = await fetch('login_php/login.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
