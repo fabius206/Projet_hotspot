@@ -325,6 +325,27 @@ textarea:focus {
     margin-bottom: 14px;
 }
 
+.success-banner {
+    background: rgba(63, 163, 77, 0.12);
+    border: 1px solid rgba(63, 163, 77, 0.35);
+    color: var(--success);
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-bottom: 14px;
+}
+
+.card-large {
+    max-width: 980px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 6px;
+}
+
 
 table {
     width: 100%;
@@ -438,6 +459,16 @@ th {
     }
 
     .field-row {
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 560px) {
+    .form-grid {
         grid-template-columns: 1fr;
     }
 }
