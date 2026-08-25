@@ -1,3 +1,19 @@
+const toggleBtn = document.querySelector('.toggle-password');
+if (toggleBtn) {
+  const pwdInput = document.getElementById('password');
+  const eyeOn = toggleBtn.querySelector('.eye-on');
+  const eyeOff = toggleBtn.querySelector('.eye-off');
+
+  toggleBtn.addEventListener('click', () => {
+    const show = pwdInput.type === 'password';
+    pwdInput.type = show ? 'text' : 'password';
+    eyeOn.style.display = show ? 'none' : '';
+    eyeOff.style.display = show ? '' : 'none';
+    toggleBtn.setAttribute('aria-label', show ? 'Masquer le mot de passe' : 'Afficher le mot de passe');
+    pwdInput.focus();
+  });
+}
+
 document.getElementById('login-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 

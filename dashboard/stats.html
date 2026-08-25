@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tableau de bord — Hotspot Diego</title>
+<title>Statistiques — Hotspot Diego</title>
 <link rel="stylesheet" href="dashboard.css?v=8">
 </head>
 <body>
@@ -14,7 +14,7 @@
       <small>Affichage</small>
     </div>
     <nav>
-      <a href="dash.html" class="active">
+      <a href="dash.html">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
         Tableau de bord
       </a>
@@ -26,7 +26,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
         Codes d'accès
       </a>
-      <a href="stats.html">
+      <a href="stats.html" class="active">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         Statistiques
       </a>
@@ -48,58 +48,56 @@
   <main class="main">
 
     <div class="topbar">
-
       <div>
-        <h1>Tableau de bord</h1>
-        <div class="subtitle">Ensemble de l'activité hotspot — Diégo-Suarez</div>
+        <h1>Statistiques</h1>
+        <div class="subtitle">Ventes et activité du hotspot — Diégo-Suarez</div>
       </div>
-      
     </div>
 
     <div class="stat-grid">
-      <div class="stat-card">
-        <div class="label">Vouchers non utilisés</div>
-        <div class="value" id="stat-non-utilise">—</div>
-      </div>
       <div class="stat-card accent">
-        <div class="label">Sessions actives</div>
-        <div class="value" id="stat-actif">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="label">Vouchers expirés</div>
-        <div class="value" id="stat-expire">—</div>
+        <div class="label">Revenus du jour</div>
+        <div class="value" id="stat-revenus-jour">—</div>
       </div>
       <div class="stat-card">
         <div class="label">Total généré</div>
         <div class="value" id="stat-total">—</div>
       </div>
-      <div class="stat-card accent">
-        <div class="label">Revenus du jour</div>
-        <div class="value" id="stat-revenus-jour">—</div>
+      <div class="stat-card">
+        <div class="label">Codes actifs</div>
+        <div class="value" id="stat-actif">—</div>
       </div>
+      <div class="stat-card">
+        <div class="label">Codes non utilisés</div>
+        <div class="value" id="stat-non-utilise">—</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <h3 style="margin-bottom:14px;">Revenus des 7 derniers jours</h3>
+      <div style="position:relative;height:300px;"><canvas id="chart-semaine"></canvas></div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <h3 style="margin-bottom:14px;">Ventes par offre</h3>
+      <table id="table-offres">
+        <thead>
+          <tr><th>Offre</th><th>Codes vendus</th><th>Total (Ar)</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
 
     <div class="card" style="margin-bottom:28px;">
-      <h3 style="margin-bottom:14px;">Statistiques</h3>
-      <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;align-items:center;">
-        <div style="position:relative;height:260px;"><canvas id="chart-semaine"></canvas></div>
-        <div style="position:relative;height:240px;"><canvas id="chart-statuts"></canvas></div>
-      </div>
+      <h3 style="margin-bottom:14px;">Répartition des codes</h3>
+      <div style="position:relative;height:260px;max-width:420px;margin:auto;"><canvas id="chart-statuts"></canvas></div>
     </div>
 
-    <div class="card">
-      <h3 style="margin-bottom:14px;">Détails des routeurs</h3>
-      <table>
-        <thead>
-          <tr><th>Nom</th><th>Adresse IP</th><th>Site</th><th>Statut</th><th></th></tr>
-        </thead>
-      </table>
-    </div>
   </main>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="../js/guard.js"></script>
-<script src="../js/dashboard.js"></script>
+<script src="../js/stats.js"></script>
 </body>
 </html>

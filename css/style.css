@@ -178,6 +178,44 @@ input:focus {
   padding-left: 38px;
 }
 
+/* Bouton oeil : afficher / masquer le mot de passe */
+.input-icon .toggle-password {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: color 0.25s ease, background-color 0.25s ease;
+}
+
+.input-icon .toggle-password:hover {
+  color: var(--lagoon);
+  background: rgba(23, 163, 152, 0.1);
+}
+
+.input-icon .toggle-password svg {
+  position: static;
+  transform: none;
+  width: 18px;
+  height: 18px;
+  pointer-events: auto;
+}
+
+.input-icon input[type="password"],
+.input-icon input[type="text"]#password {
+  padding-right: 44px;
+}
+
 /* --- Écran de connexion --- */
 .login-screen {
   min-height: 100vh;

@@ -41,9 +41,18 @@ $semaine = $db->query(
    GROUP BY d.jour ORDER BY d.jour ASC"
 )->fetchAll(PDO::FETCH_ASSOC);
 
+$offres = $db->query(
+  'SELECT p.nom, COUNT(v.id) AS nb_codes, COALESCE(SUM(p.prix), 0) AS total
+   FROM plans p
+   LEFT JOIN vouchers v ON v.plan_id = p.id
+   GROUP BY p.id, p.nom
+   ORDER BY total DESC'
+)->fetchAll(PDO::FETCH_ASSOC);
+
 echo json_encode([
   'compteurs' => $compteurs,
   'total_genere' => $totalGenere,
   'revenus_jour' => $revenusJour,
   'semaine' => $semaine,
+  'offres' => $offres,
 ]);
