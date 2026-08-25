@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Paramètres — Hotspot Diego</title>
+<title>Offres — Hotspot Diego</title>
 <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
@@ -26,11 +26,11 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
         Codes d'accès
       </a>
-      <a href="offres.html">
+      <a href="offres.html" class="active">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
         Offres
       </a>
-      <a href="parametre.html" class="active">
+      <a href="parametre.html">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
         Paramètre
       </a>
@@ -45,70 +45,48 @@
 
     <div class="topbar">
       <div>
-        <h1>Paramètres</h1>
-        <div class="subtitle">Gestion du compte administrateur</div>
+        <h1>Offres</h1>
+        <div class="subtitle">Les formules d'accès vendues sur le hotspot</div>
       </div>
     </div>
 
-    <div class="tabs">
-      <button type="button" class="tab active" data-tab="profil">Profil</button>
-      <button type="button" class="tab" data-tab="securite">Sécurité</button>
-    </div>
+    <div id="message" class="error-banner" style="display:none;"></div>
 
-    <div id="tab-profil" class="tab-panel active">
-      <div class="card card-large">
-        <h3 style="margin-bottom:6px;">Profil</h3>
-        <p class="hint" style="margin-top:0;">Nom affiché de l'administrateur du back-office.</p>
-
-        <div id="message-nom" class="error-banner" style="display:none;"></div>
-
-        <form id="form-nom">
-          <div class="form-grid form-grid-2">
-            <div class="field">
-              <label for="nom-admin">Nom de l'administrateur</label>
-              <input type="text" id="nom-admin" required minlength="3">
-            </div>
+    <div class="card" style="margin-bottom:16px;">
+      <h3 style="margin-bottom:14px;" id="titre-form">Ajouter une offre</h3>
+      <form id="form-plan">
+        <div class="form-grid form-grid-3">
+          <div class="field">
+            <label for="plan-nom">Nom de l'offre</label>
+            <input type="text" id="plan-nom" placeholder="Ex : 3 heures" required>
           </div>
-          <button type="submit" class="btn btn-primary">Enregistrer le nom</button>
-        </form>
-      </div>
+          <div class="field">
+            <label for="plan-duree">Durée (heures)</label>
+            <input type="number" id="plan-duree" min="1" required>
+          </div>
+          <div class="field">
+            <label for="plan-prix">Prix (Ariary)</label>
+            <input type="number" id="plan-prix" min="1" required>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" id="btn-plan">Ajouter l'offre</button>
+        <button type="button" class="btn btn-outline" id="btn-annuler" style="display:none;">Annuler</button>
+      </form>
     </div>
 
-    <div id="tab-securite" class="tab-panel">
-      <div class="card card-large">
-        <h3 style="margin-bottom:6px;">Sécurité</h3>
-        <p class="hint" style="margin-top:0;">Modifiez le mot de passe de connexion au back-office.</p>
-
-        <div id="message" class="error-banner" style="display:none;"></div>
-
-        <form id="form-password">
-          <div class="form-grid">
-            <div class="field">
-              <label for="username">Identifiant admin</label>
-              <input type="text" id="username" autocomplete="username" required>
-            </div>
-            <div class="field">
-              <label for="current">Mot de passe actuel</label>
-              <input type="password" id="current" autocomplete="current-password" required>
-            </div>
-            <div class="field">
-              <label for="new">Nouveau mot de passe</label>
-              <input type="password" id="new" autocomplete="new-password" required minlength="6">
-            </div>
-            <div class="field">
-              <label for="confirm">Confirmer</label>
-              <input type="password" id="confirm" autocomplete="new-password" required minlength="6">
-            </div>
-          </div>
-          <button type="submit" class="btn btn-primary">Enregistrer</button>
-        </form>
-      </div>
+    <div class="card">
+      <table id="table-plans">
+        <thead>
+          <tr><th>Nom</th><th>Durée</th><th>Prix</th><th>Codes liés</th><th>Visibilité</th><th>Actions</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
 
   </main>
 </div>
 
 <script src="../js/guard.js"></script>
-<script src="../js/parametre.js"></script>
+<script src="../js/offres.js"></script>
 </body>
 </html>
