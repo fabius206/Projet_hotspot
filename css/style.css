@@ -216,6 +216,11 @@ input:focus {
   padding-right: 44px;
 }
 
+/* Transition fluide vers les autres pages */
+@view-transition {
+    navigation: auto;
+}
+
 /* --- Écran de connexion --- */
 .login-screen {
   min-height: 100vh;
