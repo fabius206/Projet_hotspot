@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Offres — Hotspot Diego</title>
+<title>Statistiques — Hotspot Diego</title>
 <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
@@ -14,7 +14,7 @@
       <small>Affichage</small>
     </div>
     <nav>
-      <a href="dash.html">
+      <a href="dash.php">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
         Tableau de bord
       </a>
@@ -22,19 +22,19 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         Utilisateurs
       </a>
-      <a href="codes.html">
+      <a href="codes.php">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
         Codes d'accès
       </a>
-      <a href="stats.html">
+      <a href="stats.php" class="active">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         Statistiques
       </a>
-      <a href="offres.html" class="active">
+      <a href="offres.php">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
         Offres
       </a>
-      <a href="parametre.html">
+      <a href="parametre.php">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
         Paramètre
       </a>
@@ -49,48 +49,55 @@
 
     <div class="topbar">
       <div>
-        <h1>Offres</h1>
-        <div class="subtitle">Les formules d'accès vendues sur le hotspot</div>
+        <h1>Statistiques</h1>
+        <div class="subtitle">Ventes et activité du hotspot — Diégo-Suarez</div>
       </div>
     </div>
 
-    <div id="message" class="error-banner" style="display:none;"></div>
-
-    <div class="card" style="margin-bottom:16px;">
-      <h3 style="margin-bottom:14px;" id="titre-form">Ajouter une offre</h3>
-      <form id="form-plan">
-        <div class="form-grid form-grid-3">
-          <div class="field">
-            <label for="plan-nom">Nom de l'offre</label>
-            <input type="text" id="plan-nom" placeholder="Ex : 3 heures" required>
-          </div>
-          <div class="field">
-            <label for="plan-duree">Durée (heures)</label>
-            <input type="number" id="plan-duree" min="1" required>
-          </div>
-          <div class="field">
-            <label for="plan-prix">Prix (Ariary)</label>
-            <input type="number" id="plan-prix" min="1" required>
-          </div>
-        </div>
-        <button type="submit" class="btn btn-primary" id="btn-plan">Ajouter l'offre</button>
-        <button type="button" class="btn btn-outline" id="btn-annuler" style="display:none;">Annuler</button>
-      </form>
+    <div class="stat-grid">
+      <div class="stat-card accent">
+        <div class="label">Revenus du jour</div>
+        <div class="value" id="stat-revenus-jour">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Total généré</div>
+        <div class="value" id="stat-total">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Codes actifs</div>
+        <div class="value" id="stat-actif">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Codes non utilisés</div>
+        <div class="value" id="stat-non-utilise">—</div>
+      </div>
     </div>
 
-    <div class="card">
-      <table id="table-plans">
+    <div class="card" style="margin-bottom:16px;">
+      <h3 style="margin-bottom:14px;">Revenus des 7 derniers jours</h3>
+      <div style="position:relative;height:300px;"><canvas id="chart-semaine"></canvas></div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <h3 style="margin-bottom:14px;">Ventes par offre</h3>
+      <table id="table-offres">
         <thead>
-          <tr><th>Nom</th><th>Durée</th><th>Prix</th><th>Codes liés</th><th>Visibilité</th><th>Actions</th></tr>
+          <tr><th>Offre</th><th>Codes vendus</th><th>Total (Ar)</th></tr>
         </thead>
         <tbody></tbody>
       </table>
     </div>
 
+    <div class="card" style="margin-bottom:28px;">
+      <h3 style="margin-bottom:14px;">Répartition des codes</h3>
+      <div style="position:relative;height:260px;max-width:420px;margin:auto;"><canvas id="chart-statuts"></canvas></div>
+    </div>
+
   </main>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="../js/guard.js"></script>
-<script src="../js/offres.js"></script>
+<script src="../js/stats.js"></script>
 </body>
 </html>

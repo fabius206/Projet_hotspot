@@ -7,7 +7,7 @@
   <meta http-equiv="pragma" content="no-cache" />
   <meta http-equiv="expires" content="no-cache" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="../css/style.css" />
 </head>
 
 <body>
@@ -65,11 +65,6 @@
 
         <div class="field">
           <div class="input-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
             <input type="text" name="username" id="username" placeholder="Nom d'utilisateur" value="$(username)"
               autocomplete="username" />
           </div>
@@ -77,11 +72,6 @@
 
         <div class="field">
           <div class="input-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="11" width="18" height="11" rx="2" />
-              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-            </svg>
             <input type="password" name="password" id="password" placeholder="Mot de passe"
               autocomplete="current-password" />
           </div>

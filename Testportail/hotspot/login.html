@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <title>Hotspot Zone - Connexion</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta http-equiv="pragma" content="no-cache" />
+  <meta http-equiv="expires" content="no-cache" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="portal-bg"></div>
+
+$(if chap-id)
+  <form name="sendin" action="$(link-login-only)" method="post">
+    <input type="hidden" name="username" />
+    <input type="hidden" name="password" />
+    <input type="hidden" name="dst" value="$(link-orig)" />
+    <input type="hidden" name="popup" value="true" />
+  </form>
+  <script type="text/javascript" src="/md5.js"></script>
+  <script type="text/javascript">
+    function doLogin() {
+      document.sendin.username.value = document.login.username.value;
+      document.sendin.password.value = hexMD5('$(chap-id)' + document.login.password.value + '$(chap-challenge)');
+      document.sendin.submit();
+      return false;
+    }
+  </script>
+$(endif)
+
+  <div class="wrap">
+    <div class="brand-top">Hotspot<span>Zone</span></div>
+    <div class="card">
+      <div class="card-head">
+        <h1>Bienvenue !</h1>
+        <p>Connectez-vous pour accéder à Internet</p>
+      </div>
+
+$(if error)
+      <div class="status-msg error show">$(error)</div>
+$(endif)
+$(if trial == 'yes')
+      <div class="trial-banner">Accès disponible - <a href="$(link-login-only)?dst=$(link-orig-esc)&username=T-$(mac-esc)">Cliquez ici pour l'activer</a></div>
+$(endif)
+
+      <form name="login" action="$(link-login-only)" method="post" class="portal-form" $(if chap-id) onsubmit="return doLogin()" $(endif)>
+        <input type="hidden" name="dst" value="$(link-orig)" />
+        <input type="hidden" name="popup" value="true" />
+        <div class="field">
+          <div class="input-icon">
+            <input type="text" name="username" id="username" placeholder="Nom d'utilisateur" value="$(username)" autocomplete="username" required />
+          </div>
+        </div>
+        <div class="field">
+          <div class="input-icon">
+            <input type="password" name="password" id="password" placeholder="Mot de passe" autocomplete="current-password" required />
+          </div>
+        </div>
+        <button type="submit" class="btn-primary">Se connecter</button>
+      </form>
+      <p class="terms">En vous connectant, vous acceptez nos <a href="$(link-login-only)?target=lv&dst=$(link-orig-esc)">conditions d'utilisation</a>.</p>
+    </div>
+    <div class="footer">Hotspot Zone - Accès Internet</div>
+  </div>
+  <script>document.getElementById('username').focus();</script>
+</body>
+</html>

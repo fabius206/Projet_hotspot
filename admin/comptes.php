@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Comptes — Hotspot Diego</title>
-<link rel="stylesheet" href="dashboard.css?v=9">
+<script src="../js/theme-preload.js"></script><link rel="stylesheet" href="dashboard.css?v=9">
 </head>
 <body>
 <div class="tout">
@@ -40,10 +40,7 @@
       <a href="../login_php/logout.php">Déconnexion</a>
     </nav></aside>
   <main class="main">
-    <div class="topbar"><div><h1>Comptes administrateurs</h1></div><div class="topbar-actions"><button id="theme-toggle" class="theme-toggle" type="button" aria-label="Passer en mode sombre">
-      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
-      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-    </button></div></div>
+    <div class="topbar"><div><h1>Comptes administrateurs</h1></div></div>
     <div class="stat-grid" style="grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px;">
       <div class="stat-card"><div class="label">Admins totaux</div><div class="value" id="counter-admins">—</div></div>
       <div class="stat-card accent"><div class="label">Super Admins</div><div class="value" id="counter-super">—</div></div>
@@ -54,6 +51,7 @@
       <form id="form-compte"><input type="hidden" id="edit-id">
         <div style="display:grid;grid-template-columns:1.2fr 1fr 0.9fr;gap:12px;">
           <div class="field"><label>Identifiant *</label><input type="text" id="c-username" required placeholder="james"></div>
+          <div class="field"><label>E-mail</label><input type="email" id="c-email" placeholder="admin@exemple.com"></div>
           <div class="field"><label>Mot de passe *</label><input type="password" id="c-password" placeholder="••••••••"></div>
           <div class="field"><label>Rôle</label><select id="c-role"><option value="admin">Admin</option><option value="super_admin">Super Admin</option></select></div>
         </div>
@@ -61,6 +59,20 @@
       </form>
     </div>
     <div class="card"><div class="table-responsive"><table id="table-comptes"><thead><tr><th>Identifiant</th><th>Rôle</th><th>Créé le</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div>
+    <div id="modal-reset" class="modal-overlay" style="display:none;">
+      <div class="modal">
+        <div class="modal-header"><h3>Réinitialiser le mot de passe</h3><button type="button" class="modal-close" onclick="closeModal('modal-reset')">&times;</button></div>
+        <div class="modal-body"><label for="input-new-pwd">Nouveau mot de passe</label><input type="password" id="input-new-pwd" minlength="6" autocomplete="new-password"></div>
+        <div class="modal-footer"><button type="button" class="btn btn-outline" onclick="closeModal('modal-reset')">Annuler</button><button type="button" class="btn btn-primary" id="btn-confirm-reset">Enregistrer</button></div>
+      </div>
+    </div>
+    <div id="modal-delete" class="modal-overlay" style="display:none;">
+      <div class="modal">
+        <div class="modal-header"><h3>Supprimer le compte</h3><button type="button" class="modal-close" onclick="closeModal('modal-delete')">&times;</button></div>
+        <div class="modal-body"><p>Cette action est définitive. Voulez-vous continuer ?</p></div>
+        <div class="modal-footer"><button type="button" class="btn btn-outline" onclick="closeModal('modal-delete')">Annuler</button><button type="button" class="btn btn-danger" id="btn-confirm-delete">Supprimer</button></div>
+      </div>
+    </div>
   </main>
 </div>
 <script src="../js/guard.js"></script>

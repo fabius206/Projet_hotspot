@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Clients — Hotspot Diego</title>
-<link rel="stylesheet" href="dashboard.css?v=9">
+<script src="../js/theme-preload.js"></script><link rel="stylesheet" href="dashboard.css?v=9">
 <script>(function(){try{var s=localStorage.getItem('hotspot-theme'); if(s==='dark') document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
 </head>
 <body>
@@ -43,10 +43,7 @@
     </nav></aside>
   <main class="main">
     <div class="topbar"><div><h1>Gestion des clients</h1><div class="subtitle">Comptes utilisateurs du hotspot</div></div>
-    <div class="topbar-actions"><button id="theme-toggle" class="theme-toggle" type="button" aria-label="Passer en mode sombre">
-      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
-      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-    </button></div></div>
+    </div>
     <div class="stat-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;">
       <div class="stat-card"><div class="label">Total clients</div><div class="value" id="cl-total">—</div></div>
       <div class="stat-card accent"><div class="label">Actifs</div><div class="value" id="cl-actifs">—</div></div>
@@ -62,7 +59,7 @@
           <div class="field"><label>Email</label><input type="email" id="cl-email" placeholder="jean@email.com"></div>
         </div>
         <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end;margin-top:12px;">
-          <div class="field"><label>Téléphone</label><div style="display:flex;gap:6px;"><select id="cl-country"><option value="+261" selected>🇲🇬 +261</option><option value="+33">🇫🇷 +33</option></select><input type="tel" id="cl-tel" placeholder="32 12 345 67" style="flex:1"></div></div>
+          <div class="field client-phone-field"><label>Téléphone</label><div class="client-phone-input"><select id="cl-country"><option value="+261" selected>🇲🇬 +261</option><option value="+33">🇫🇷 +33</option></select><input type="tel" id="cl-tel" placeholder="32 12 345 67"></div></div>
           <div class="field" style="display:flex;gap:8px;align-items:end;"><button type="submit" class="btn btn-primary" id="btn-submit">Créer le client</button><button type="button" class="btn btn-outline" id="btn-cancel" style="display:none">Annuler</button></div>
         </div>
         <input type="hidden" id="cl-username"><input type="hidden" id="cl-password">

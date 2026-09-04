@@ -1,4 +1,5 @@
 // ===== SPA NAVIGATION — sidebar reste fixe, seul le blanc change =====
+const prefetchCache = new Map();
 history.pushState(null, '', window.location.href);
 window.addEventListener('popstate', () => {
   loadPageContent(window.location.href, false);
@@ -425,6 +426,9 @@ function loadPageContent(url, pushState) {
         const scripts = Array.from(newMain.querySelectorAll('script'));
         let chain = Promise.resolve();
         scripts.forEach(oldScript => {
+          // guard.js est déjà actif dans le document courant : le réinjecter
+          // provoquerait des redéclarations et casserait la navigation SPA.
+          if (oldScript.src && oldScript.src.includes('/js/guard.js')) return;
           chain = chain.then(() => new Promise(resolve => {
             const s = document.createElement('script');
             if (oldScript.src) {
@@ -462,7 +466,10 @@ function loadPageContent(url, pushState) {
 document.addEventListener('click', (e) => {
   const link = e.target.closest('.deuxieme nav a');
   if (!link) return;
-  // Laisser le comportement natif (pas de preventDefault)
+  const href = link.href;
+  if (!href || link.target === '_blank' || href.includes('/logout.php')) return;
+  e.preventDefault();
+  loadPageContent(href, true);
 });
 // Prefetch désactivé
 
@@ -505,12 +512,12 @@ async function loadSwitchList() {
           if (r.ok && d.success) {
             window.location.reload();
           } else {
-            alert(d.error || 'Erreur lors du changement');
+            window.showToast(d.error || 'Erreur lors du changement', 'error');
             btn.disabled = false;
             btn.textContent = 'Basculer';
           }
         } catch (err) {
-          alert('Erreur réseau');
+          window.showToast('Erreur réseau', 'error');
           btn.disabled = false;
           btn.textContent = 'Basculer';
         }
@@ -547,16 +554,27 @@ window.addEventListener('hotspot:avatar-updated', (e) => {
 
 // ===== MESSAGE BOX TOAST UNIFIÉ GLOBALE (Style Offre) =====
 window.showToast = function(text, ok = true) {
-  const container = document.getElementById('toast-container');
-  const textEl = document.getElementById('toast-text');
-  if (!container || !textEl) return;
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    container.className = 'toast-container';
+    container.setAttribute('role', 'status');
+    container.innerHTML = '<span id="toast-text"></span>';
+    document.body.appendChild(container);
+  }
+  let textEl = container.querySelector('#toast-text');
+  if (!textEl) {
+    textEl = document.createElement('span');
+    textEl.id = 'toast-text';
+    container.appendChild(textEl);
+  }
   textEl.textContent = text;
   const isErr = (ok === false || ok === 'error');
   const isWarn = (ok === 'warn');
   const isInfo = (ok === 'info');
   const cls = isErr ? 'toast-error' : (isWarn ? 'toast-warn' : (isInfo ? 'toast-info' : 'toast-success'));
   container.className = 'toast-container ' + cls;
-  container.removeAttribute('style');
   container.style.display = 'flex';
   clearTimeout(container._toastTimer);
   container._toastTimer = setTimeout(() => {
@@ -565,3 +583,32 @@ window.showToast = function(text, ok = true) {
 };
 window.showMessage = window.showToast;
 
+window.showConfirm = function(text, options = {}) {
+  const title = options.title || 'Confirmer l’action';
+  const confirmLabel = options.confirmLabel || 'Confirmer';
+  const existing = document.getElementById('global-confirm');
+  if (existing) existing.remove();
+  return new Promise(resolve => {
+    const modal = document.createElement('div');
+    modal.id = 'global-confirm';
+    modal.className = 'modal-overlay global-confirm-overlay';
+    modal.style.display = 'flex';
+    modal.innerHTML = `
+      <div class="modal global-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="global-confirm-title">
+        <div class="modal-header"><h3 id="global-confirm-title">${escHtml(title)}</h3>
+          <button type="button" class="modal-close" aria-label="Fermer">&times;</button>
+        </div>
+        <div class="modal-body"><p>${escHtml(text)}</p></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-confirm-cancel>Annuler</button>
+          <button type="button" class="btn btn-danger" data-confirm-ok>${escHtml(confirmLabel)}</button>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+    const finish = value => { modal.remove(); resolve(value); };
+    modal.querySelector('[data-confirm-cancel]').addEventListener('click', () => finish(false));
+    modal.querySelector('[data-confirm-ok]').addEventListener('click', () => finish(true));
+    modal.querySelector('.modal-close').addEventListener('click', () => finish(false));
+    modal.addEventListener('click', event => { if (event.target === modal) finish(false); });
+  });
+};

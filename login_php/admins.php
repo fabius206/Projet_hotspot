@@ -24,6 +24,7 @@ if ($method === 'POST') {
     echo json_encode(['error' => 'Action réservée au Super Admin']);
     exit;
   }
+  verify_csrf();
   $input = json_decode(file_get_contents('php://input'), true) ?: [];
   $action = $input['action'] ?? '';
 
@@ -65,6 +66,7 @@ if ($method === 'POST') {
   if ($action === 'modifier') {
     $id = (int)($input['id'] ?? 0);
     $username = trim($input['username'] ?? '');
+    $email = trim($input['email'] ?? '');
     $role = $input['role'] ?? 'admin';
     if (!in_array($role, ['admin','super_admin'], true)) $role = 'admin';
     if ($role === 'super_admin' && $currentRole !== 'super_admin') {
@@ -72,6 +74,9 @@ if ($method === 'POST') {
     }
     if ($id <= 0 || mb_strlen($username) < 3) {
       http_response_code(400); echo json_encode(['error' => 'Données invalides']); exit;
+    }
+    if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+      http_response_code(400); echo json_encode(['error' => 'Email invalide']); exit;
     }
     // Empêche de rétrograder le dernier super_admin
     $cur = $db->prepare('SELECT role FROM admins WHERE id = ?');
@@ -91,8 +96,8 @@ if ($method === 'POST') {
     $check = $db->prepare('SELECT id FROM admins WHERE username = ? AND id != ?');
     $check->execute([$username, $id]);
     if ($check->fetch()) { http_response_code(409); echo json_encode(['error' => 'Ce nom existe déjà']); exit; }
-    $stmt = $db->prepare('UPDATE admins SET username = ?, role = ? WHERE id = ?');
-    $stmt->execute([$username, $role, $id]);
+    $stmt = $db->prepare('UPDATE admins SET username = ?, email = ?, role = ? WHERE id = ?');
+    $stmt->execute([$username, $email !== '' ? $email : null, $role, $id]);
     echo json_encode(['success' => true, 'message' => 'Compte modifié']);
     exit;
   }

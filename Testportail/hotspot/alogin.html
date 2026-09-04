@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<title>Hotspot Zone — Connexion réussie</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="expires" content="no-cache" />
+<meta http-equiv="refresh" content="2; url=$(link-redirect)" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+
+<!-- ══════════════════════════════════════════════════
+     BACK-END MikroTik : startClock (ne pas modifier)
+     ══════════════════════════════════════════════════ -->
+<script type="text/javascript">
+<!--
+  function startClock() {
+    $(if popup == 'true')
+    open('$(link-status)', 'hotspot_status', 'toolbar=0,location=0,directories=0,status=0,menubars=0,resizable=1,width=320,height=240');
+    $(endif)
+    location.href = '$(link-redirect)';
+  }
+//-->
+</script>
+<!-- ═══════════════════════════════════════════════════ -->
+
+<body onload="startClock()">
+
+<div class="portal-bg"></div>
+
+<div class="wrap">
+  <div class="brand-top">Hotspot<span>Zone</span></div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon ok">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+          <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+      </div>
+      <h1>Vous êtes connecté !</h1>
+      <p>Redirection en cours…</p>
+    </div>
+
+    <div class="status-msg info show">
+      Vous allez être redirigé automatiquement dans quelques secondes.
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar"></div>
+    </div>
+
+    <a href="$(link-redirect)" class="btn-outline" id="btn-redirect">
+      Continuer maintenant
+    </a>
+  </div>
+
+  <div class="footer">Hotspot Zone · Accès Internet</div>
+</div>
+
+</body>
+</html>

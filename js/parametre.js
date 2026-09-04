@@ -57,6 +57,20 @@ function makeShow(box) {
 const showNom = makeShow(document.getElementById('message-nom'));
 const showPass = makeShow(document.getElementById('message'));
 
+function formatTelephone(value) {
+  const digits = String(value || '').replace(/\D/g, '').slice(0, 10);
+  return digits.replace(/^(\d{3})(\d{0,2})(\d{0,3})(\d{0,2}).*$/, (_, a, b, c, d) =>
+    [a, b, c, d].filter(Boolean).join(' ')
+  );
+}
+
+const telephoneInput = document.getElementById('telephone-admin');
+if (telephoneInput) {
+  telephoneInput.addEventListener('input', () => {
+    telephoneInput.value = formatTelephone(telephoneInput.value);
+  });
+}
+
 // --- Profil : photo + nom de l'admin ---
 let currentPhoto = null;
 fetch('../login_php/admin_info.php')
@@ -66,6 +80,10 @@ fetch('../login_php/admin_info.php')
     if (admin && admin.username) {
       document.getElementById('nom-admin').value = admin.username;
     }
+    const emailInput = document.getElementById('email-admin');
+    const telephoneInput = document.getElementById('telephone-admin');
+    if (emailInput) emailInput.value = admin.email || data.email || '';
+    if (telephoneInput) telephoneInput.value = formatTelephone(admin.telephone || data.telephone || '');
     const photoUrl = admin.photo || data.photo || null;
     const preview = document.getElementById('photo-preview');
     const placeholder = document.getElementById('photo-placeholder');
@@ -77,10 +95,11 @@ fetch('../login_php/admin_info.php')
       if (removeBtn) removeBtn.style.display = '';
       currentPhoto = photoUrl;
       notifyAvatar(photoUrl);
-      // met à jour l'initiale du placeholder au cas où
-      if (placeholder && admin.username) placeholder.textContent = admin.username.trim().charAt(0).toUpperCase();
     } else {
-      if (admin.username && placeholder) placeholder.textContent = admin.username.trim().charAt(0).toUpperCase();
+      if (placeholder) {
+        placeholder.textContent = '';
+        placeholder.style.display = 'none';
+      }
     }
   })
   .catch(() => {});
@@ -96,19 +115,20 @@ const msgPhoto = document.getElementById('message-photo');
 let pendingFile = null;
 
 // Met à jour l'avatar du header immédiatement + notifie guard.js
-function notifyAvatar(photoUrl, fallbackInitial) {
+function notifyAvatar(photoUrl) {
   const av = document.getElementById('avatar-initial');
   if (av) {
     if (photoUrl) {
       av.innerHTML = '<img src="' + photoUrl + '" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
+      av.style.display = 'flex';
       av.style.padding = '0';
       av.style.overflow = 'hidden';
       av.setAttribute('data-photo', photoUrl);
     } else {
       av.removeAttribute('data-photo');
       av.innerHTML = '';
-      const n = (document.getElementById('nom-admin')?.value || document.getElementById('profile-name')?.textContent || '').trim();
-      av.textContent = (n.charAt(0) || fallbackInitial || 'N').toUpperCase();
+      av.textContent = '';
+      av.style.display = 'none';
       av.style.padding = '';
       av.style.background = '';
     }
@@ -179,7 +199,10 @@ if(btnUpload){
 }
 if(btnRemove){
   btnRemove.addEventListener('click', async ()=>{
-    if(!confirm('Retirer la photo de profil ?')) return;
+    if (typeof window.showConfirm === 'function' && !(await window.showConfirm('La photo de profil sera retirée.', {
+      title: 'Retirer la photo ?',
+      confirmLabel: 'Retirer'
+    }))) return;
     try{
       let csrf=''; try{ const r=await fetch('../login_php/check_session.php',{credentials:'same-origin'}); const d=await r.json(); csrf=d.csrf||''; }catch(e){}
       const resp = await fetch('../login_php/upload_photo.php', {method:'POST', headers: {'Content-Type':'application/json', ...(csrf?{'X-CSRF-Token':csrf}:{})}, body: JSON.stringify({action:'remove'}), credentials:'same-origin'});
@@ -189,10 +212,10 @@ if(btnRemove){
       photoPreview.style.display='none';
       if (photoPreview.dataset.blob) { URL.revokeObjectURL(photoPreview.dataset.blob); photoPreview.removeAttribute('data-blob'); }
       photoPreview.src='';
-      if(photoPlaceholder){ photoPlaceholder.style.display='flex'; const nm=document.getElementById('nom-admin').value.trim(); if(nm) photoPlaceholder.textContent=nm.charAt(0).toUpperCase(); }
+      if(photoPlaceholder){ photoPlaceholder.style.display='none'; photoPlaceholder.textContent=''; }
       btnRemove.style.display='none';
       if(pendingFile){ pendingFile=null; photoInput.value=''; }
-      notifyAvatar(null);               // revient à l'initiale, sans refresh
+      notifyAvatar(null);               // masque l'avatar, sans refresh
     }catch(e){
       showPhotoMsg(e.message||'Erreur', false);
     }
@@ -206,13 +229,15 @@ document.getElementById('form-nom').addEventListener('submit', async (e) => {
 
   const btn = e.target.querySelector('.btn');
   const newUsername = document.getElementById('nom-admin').value.trim();
+  const email = document.getElementById('email-admin')?.value.trim() || '';
+  const telephone = document.getElementById('telephone-admin')?.value.trim() || '';
   btn.disabled = true;
 
   try {
     const response = await fetch('../login_php/modifier_nom.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ new_username: newUsername }),
+      body: JSON.stringify({ new_username: newUsername, email, telephone }),
     });
 
     const data = await response.json().catch(() => ({}));

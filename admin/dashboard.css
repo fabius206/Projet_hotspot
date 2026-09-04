@@ -718,6 +718,7 @@ textarea:focus {
     border-radius: 8px;
     font-size: 0.85rem;
     margin-bottom: 14px;
+    line-height: 1.45;
 }
 
 .success-banner {
@@ -761,6 +762,38 @@ textarea:focus {
     background: var(--paper);
     color: var(--ink);
     border-left-color: var(--danger);
+}
+
+.toast-container {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 11000;
+    display: none;
+    align-items: center;
+    width: min(390px, calc(100vw - 32px));
+    min-height: 52px;
+    padding: 14px 18px;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--lagoon);
+    border-radius: 12px;
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: 0 14px 36px rgba(14, 42, 61, .2);
+    animation: slide-up .22s ease-out;
+}
+
+.toast-container.toast-success { border-left-color: var(--success); }
+.toast-container.toast-error { border-left-color: var(--danger); }
+.toast-container.toast-warn { border-left-color: var(--coral); }
+.toast-container.toast-info { border-left-color: var(--lagoon); }
+
+@media (max-width: 560px) {
+    .toast-container {
+        right: 16px;
+        bottom: 16px;
+        width: calc(100vw - 32px);
+    }
 }
 
 /* Toolbar & Search Wrap */
@@ -1431,6 +1464,109 @@ th {
 .table-responsive {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    border-radius: 14px;
+}
+
+/* Espacement uniforme des actions et lecture plus aérée des tableaux. */
+table tbody tr {
+    border-bottom: 1px solid var(--line);
+}
+
+table tbody td {
+    padding: 14px 16px;
+    vertical-align: middle;
+}
+
+table tbody td:last-child {
+    min-width: 150px;
+}
+
+table tbody td:last-child .btn,
+table tbody td:last-child button {
+    margin: 3px 4px 3px 0;
+}
+
+.admin-profile-photo {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin: 20px 0 24px;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--surface);
+}
+
+.admin-name-field {
+    max-width: 360px;
+}
+
+.admin-phone-field {
+    max-width: 220px;
+}
+
+@media (max-width: 560px) {
+    .admin-name-field,
+    .admin-phone-field {
+        max-width: 100%;
+    }
+}
+
+.admin-photo-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 88px;
+    height: 88px;
+    overflow: hidden;
+    flex: 0 0 88px;
+    border-radius: 50%;
+    background: var(--lagoon);
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.admin-photo-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.admin-photo-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.admin-photo-controls .hint {
+    margin: 0;
+}
+
+.photo-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.photo-message {
+    font-size: .82rem;
+}
+
+@media (max-width: 560px) {
+    .admin-profile-photo {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+.global-confirm-overlay {
+    z-index: 1200;
+}
+
+.global-confirm-modal {
+    width: min(430px, calc(100vw - 32px));
 }
 
 #table-sessions {
@@ -1596,9 +1732,32 @@ th {
     white-space: nowrap;
 }
 
+.theme-mode-orb {
+    display: inline-flex;
+    width: 22px;
+    height: 22px;
+    align-items: center;
+    justify-content: center;
+    color: var(--lagoon);
+    flex: 0 0 22px;
+}
+
+.theme-mode-orb svg {
+    width: 20px;
+    height: 20px;
+}
+
+.dark-mode-btn:hover .theme-mode-orb {
+    transform: scale(1.12);
+}
+
 .dark-mode-btn:hover {
     border-color: var(--lagoon);
     box-shadow: 0 2px 12px rgba(23, 163, 152, 0.15);
+}
+
+.theme-settings-card {
+    margin-top: 16px;
 }
 
 [data-theme="dark"] .dark-mode-btn {
@@ -1813,6 +1972,21 @@ html:not([data-theme="dark"]) .only-dark { display:none !important; }
 
 /* Harmonisation : même radius/ombre pour tous les cards/tables — inspiré portail */
 .card, .stat-card, .dash-card, .dash-panel { transition: background var(--transition-speed) ease, border-color var(--transition-speed) ease, transform 0.2s ease, box-shadow 0.2s ease; }
+.client-phone-field {
+    max-width: 360px;
+}
+.client-phone-input {
+    display: flex;
+    gap: 6px;
+}
+.client-phone-input select {
+    width: 104px;
+    flex: 0 0 104px;
+}
+.client-phone-input input {
+    width: 170px;
+    flex: 0 1 170px;
+}
 .card { border-top: 2px solid rgba(14,42,61,0.06); }
 .card:hover { border-top-color: rgba(14,42,61,0.12); box-shadow: 0 8px 24px rgba(14,42,61,0.06), var(--shadow); }
 input:focus, select:focus, textarea:focus { border-color: var(--lagoon) !important; box-shadow: 0 0 0 3px rgba(23,163,152,0.12) !important; }
@@ -1877,6 +2051,13 @@ input:focus, select:focus, textarea:focus { border-color: var(--lagoon) !importa
     .main .topbar-actions > * {
         width: 100%;
     }
+
+    .client-phone-field,
+    .client-phone-input input {
+        max-width: 100%;
+        width: 100%;
+        flex: 1 1 auto;
+    }
 }
 
 @media (max-width: 800px) {
@@ -1936,19 +2117,70 @@ input:focus, select:focus, textarea:focus { border-color: var(--lagoon) !importa
 
 @media (max-width: 560px) {
     .deuxieme {
-        padding: 12px 10px;
+        position: sticky;
+        top: 0;
+        width: 64px;
+        height: 100vh;
+        min-height: 100vh;
+        flex: 0 0 64px;
+        flex-direction: column;
+        align-items: center;
+        padding: 14px 8px;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .tout {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    .deuxieme .title {
+        width: 100%;
+        overflow: hidden;
+        font-size: 0;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .deuxieme .title::before {
+        content: 'H';
+        display: block;
+        color: var(--lagoon);
+        font-size: 1.25rem;
+        font-weight: 700;
     }
 
     .deuxieme .title small {
         display: none;
     }
 
+    .deuxieme nav {
+        width: 100%;
+        min-width: 0;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        margin-top: 16px;
+    }
+
     .deuxieme nav a {
-        font-size: 0.8rem;
+        width: 44px;
+        height: 44px;
+        justify-content: center;
         padding: 8px;
+        border-left: 0;
+        border-radius: 10px;
+        font-size: 0;
+    }
+
+    .deuxieme nav a svg {
+        width: 20px;
+        height: 20px;
     }
 
     .main {
+        min-width: 0;
         padding: 18px 12px 28px;
     }
 

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Paramètres — Hotspot Diego</title>
-<link rel="stylesheet" href="dashboard.css">
+<script src="../js/theme-preload.js"></script><link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
 
@@ -61,23 +61,50 @@
     <div class="tabs">
       <button type="button" class="tab active" data-tab="profil">Profil</button>
       <button type="button" class="tab" data-tab="securite">Sécurité</button>
+      <button type="button" class="tab" data-tab="apparence">Apparence</button>
     </div>
 
     <div id="tab-profil" class="tab-panel active">
       <div class="card card-large">
         <h3 style="margin-bottom:6px;">Profil</h3>
-        <p class="hint" style="margin-top:0;">Nom affiché de l'administrateur du back-office.</p>
+        <p class="hint" style="margin-top:0;">Gérez votre photo et votre nom d'affichage dans le back-office.</p>
 
         <div id="message-nom" class="error-banner" style="display:none;"></div>
 
+        <div class="admin-profile-photo">
+          <div class="admin-photo-preview">
+            <span id="photo-placeholder" aria-hidden="true"></span>
+            <img id="photo-preview" alt="Photo de profil" style="display:none;">
+          </div>
+          <div class="admin-photo-controls">
+            <strong>Photo de profil</strong>
+            <span class="hint">JPG, PNG, WebP ou GIF · 2 Mo maximum</span>
+            <input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp,image/gif" hidden>
+            <div class="photo-actions">
+              <button type="button" class="btn btn-outline" id="btn-choose-photo">Choisir une photo</button>
+              <button type="button" class="btn btn-primary" id="btn-upload-photo" style="display:none;">Enregistrer</button>
+              <button type="button" class="btn btn-outline" id="btn-remove-photo" style="display:none;">Retirer</button>
+            </div>
+            <div id="message-photo" class="photo-message" style="display:none;"></div>
+          </div>
+        </div>
+
         <form id="form-nom">
           <div class="form-grid form-grid-2">
-            <div class="field">
+            <div class="field admin-name-field">
               <label for="nom-admin">Nom de l'administrateur</label>
               <input type="text" id="nom-admin" required minlength="3">
             </div>
+            <div class="field">
+              <label for="email-admin">E-mail</label>
+              <input type="email" id="email-admin" autocomplete="email" placeholder="admin@exemple.com">
+            </div>
+            <div class="field admin-phone-field">
+              <label for="telephone-admin">Téléphone</label>
+              <input type="tel" id="telephone-admin" autocomplete="tel" inputmode="numeric" maxlength="13" placeholder="032 45 678 12">
+            </div>
           </div>
-          <button type="submit" class="btn btn-primary">Enregistrer le nom</button>
+          <button type="submit" class="btn btn-primary">Enregistrer le profil</button>
         </form>
       </div>
     </div>
@@ -110,6 +137,18 @@
           </div>
           <button type="submit" class="btn btn-primary">Enregistrer</button>
         </form>
+      </div>
+    </div>
+
+    <div id="tab-apparence" class="tab-panel">
+      <div class="card card-large theme-settings-card">
+        <h3 style="margin-bottom:6px;">Apparence</h3>
+        <p class="hint" style="margin-top:0;">Choisissez le thème de l'interface. Votre choix est conservé automatiquement.</p>
+        <button type="button" id="dark-mode-btn" class="dark-mode-btn" aria-label="Passer en mode sombre">
+          <span class="theme-mode-orb" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/></svg></span>
+          <svg id="dark-mode-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"></svg>
+          <span id="dark-mode-label">Mode sombre</span>
+        </button>
       </div>
     </div>
 

@@ -515,7 +515,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Logs
   document.getElementById('log-filter-level')?.addEventListener('change', loadLogs);
   document.getElementById('btn-clear-logs')?.addEventListener('click', async () => {
-    if (!confirm('Effacer tous les journaux ?')) return;
+    if (!(await window.showConfirm('Tous les journaux du routeur seront supprimés.', {
+      title: 'Effacer les journaux ?',
+      confirmLabel: 'Effacer'
+    }))) return;
     try {
       await rApiPost({ action: 'clear_logs' });
       loadLogs();

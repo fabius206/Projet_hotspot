@@ -195,7 +195,7 @@ function supprimer(id) {
   document.getElementById('modal-confirm').style.display = 'flex';
 }
 
-document.getElementById('btn-confirm-delete').addEventListener('click', async () => {
+document.getElementById('btn-confirm-delete')?.addEventListener('click', async () => {
   if (!clientToDelete) return;
   const id = clientToDelete;
   closeModal('modal-confirm');

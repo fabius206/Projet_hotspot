@@ -77,7 +77,7 @@ async function charger() {
       <td><span class="badge ${badgeClass}">${roleLabel}</span></td>
       <td>${a.creation}</td>
       <td style="white-space:nowrap;">
-        <button class="btn btn-icon btn-sm" ${locked ? 'disabled' : ''} onclick="startEdit(${a.id}, '${a.username.replace(/'/g,"\\'")}', '${a.role}')" title="Modifier" aria-label="Modifier">
+        <button class="btn btn-icon btn-sm" ${locked ? 'disabled' : ''} onclick="startEdit(${a.id}, '${a.username.replace(/'/g,"\\'")}', '${a.role}', '${(a.email || '').replace(/'/g,"\\'")}')" title="Modifier" aria-label="Modifier">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
         <button class="btn btn-icon btn-sm" ${locked || isOwn ? 'disabled' : ''} onclick="resetPwd(${a.id})" title="Mot de passe" aria-label="Mot de passe">
@@ -91,10 +91,11 @@ async function charger() {
   }).join('');
 }
 
-function startEdit(id, username, role) {
+function startEdit(id, username, role, email = '') {
   editId = id;
   document.getElementById('edit-id').value = id;
   document.getElementById('c-username').value = username;
+  document.getElementById('c-email').value = email;
   document.getElementById('c-role').value = role;
   document.getElementById('c-password').value = '';
   document.getElementById('c-password').required = false;
@@ -178,12 +179,13 @@ document.addEventListener('keydown', (e) => {
 document.getElementById('form-compte').addEventListener('submit', async (e) => {
   e.preventDefault();
   const username = document.getElementById('c-username').value.trim();
+  const email = document.getElementById('c-email').value.trim();
   const password = document.getElementById('c-password').value;
   const role = document.getElementById('c-role').value;
 
   if (editId) {
     // Modification : username + role, mot de passe optionnel via reset séparé si fourni
-    const r = await fetch('../login_php/admins.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'modifier', id: editId, username, role}) });
+    const r = await fetch('../login_php/admins.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'modifier', id: editId, username, email, role}) });
     const data = await r.json().catch(()=>({}));
     if (!r.ok) { showMsg(data.error||'Erreur', false); return; }
     if (password) {
@@ -196,7 +198,7 @@ document.getElementById('form-compte').addEventListener('submit', async (e) => {
     charger();
   } else {
     if (!password || password.length < 6) { showMsg('Mot de passe 6 caractères minimum', false); return; }
-    const r = await fetch('../login_php/admins.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'creer', username, password, role}) });
+    const r = await fetch('../login_php/admins.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'creer', username, email, password, role}) });
     const data = await r.json().catch(()=>({}));
     showMsg(data.message || data.error, r.ok);
     if (r.ok) { e.target.reset(); charger(); }

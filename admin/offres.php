@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Offres — Hotspot Diego</title>
-<link rel="stylesheet" href="dashboard.css?v=9">
+<script src="../js/theme-preload.js"></script><link rel="stylesheet" href="dashboard.css?v=9">
 </head>
 <body>
 <div class="tout">

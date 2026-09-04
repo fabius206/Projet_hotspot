@@ -6,7 +6,8 @@ require_admin();
 
 $adminId = (int)($_SESSION['admin_id'] ?? $_SESSION['user_id'] ?? 0);
 $db = db();
-$stmt = $db->prepare('SELECT id, username, role, photo, creation FROM admins WHERE id = ?');
+$db->exec("ALTER TABLE admins ADD COLUMN IF NOT EXISTS telephone VARCHAR(30) NULL");
+$stmt = $db->prepare('SELECT id, username, email, telephone, role, photo, creation FROM admins WHERE id = ?');
 $stmt->execute([$adminId]);
 $admin = $stmt->fetch();
 
@@ -31,12 +32,16 @@ echo json_encode([
   'admin' => [
     'id' => (int)$admin['id'],
     'username' => $admin['username'],
+    'email' => $admin['email'] ?? '',
+    'telephone' => $admin['telephone'] ?? '',
     'role' => $admin['role'],
     'photo' => $photoUrl,
     'creation' => $admin['creation']
   ],
   // compat ancien JS
   'username' => $admin['username'],
+  'email' => $admin['email'] ?? '',
+  'telephone' => $admin['telephone'] ?? '',
   'role' => $admin['role'],
   'photo' => $photoUrl,
   'nom_complet' => $admin['username']

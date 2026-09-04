@@ -410,7 +410,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-bulk-deactivate')?.addEventListener('click', async () => {
     const ids = [...VouchersState.selectedIds];
     if (!ids.length) return;
-    if (!confirm(`Désactiver ${ids.length} voucher(s) ?`)) return;
+    if (typeof window.showConfirm === 'function' && !(await window.showConfirm(`Désactiver ${ids.length} voucher(s) ?`, {
+      title: 'Désactiver les vouchers ?',
+      confirmLabel: 'Désactiver'
+    }))) return;
     try {
       await vApiPost({ action: 'bulk_deactivate', ids });
       ids.forEach(id => {
@@ -426,7 +429,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-bulk-delete')?.addEventListener('click', async () => {
     const ids = [...VouchersState.selectedIds];
     if (!ids.length) return;
-    if (!confirm(`Supprimer ${ids.length} voucher(s) ? Irréversible.`)) return;
+    if (typeof window.showConfirm === 'function' && !(await window.showConfirm(`Supprimer ${ids.length} voucher(s) ? Cette action est irréversible.`, {
+      title: 'Supprimer les vouchers ?',
+      confirmLabel: 'Supprimer'
+    }))) return;
     try {
       await vApiPost({ action: 'bulk_delete', ids });
       VouchersState.allData = VouchersState.allData.filter(v => !ids.includes(v.id));

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<title>Hotspot Zone — Déconnexion</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="expires" content="no-cache" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+
+<!-- ══════════════════════════════════════════════════
+     BACK-END MikroTik : openLogin (ne pas modifier)
+     ══════════════════════════════════════════════════ -->
+<script type="text/javascript">
+<!--
+  function openLogin() {
+    if (window.name != 'hotspot_logout') return true;
+    open('$(link-login)', '_blank', '');
+    window.close();
+    return false;
+  }
+//-->
+</script>
+<!-- ═══════════════════════════════════════════════════ -->
+
+<body>
+
+<div class="portal-bg"></div>
+
+<div class="wrap">
+  <div class="brand-top">Hotspot<span>Zone</span></div>
+
+  <div class="card">
+    <div class="card-head">
+      <h1>Déconnexion</h1>
+      <p>Vous avez été déconnecté avec succès</p>
+    </div>
+
+    <!-- ═══ Récapitulatif de session (back-end intact) ═══ -->
+    <table class="session-table">
+      <tr>
+        <td>Utilisateur</td>
+        <td>$(username)</td>
+      </tr>
+      <tr>
+        <td>Adresse IP</td>
+        <td>$(ip)</td>
+      </tr>
+      <tr>
+        <td>Adresse MAC</td>
+        <td>$(mac)</td>
+      </tr>
+      <tr>
+        <td>Durée session</td>
+        <td>$(uptime)</td>
+      </tr>
+      $(if session-time-left)
+      <tr>
+        <td>Temps restant</td>
+        <td>$(session-time-left)</td>
+      </tr>
+      $(endif)
+      <tr>
+        <td>Données ↑ / ↓</td>
+        <td>$(bytes-in-nice) / $(bytes-out-nice)</td>
+      </tr>
+    </table>
+    <!-- ═════════════════════════════════════════════════ -->
+
+    <!-- Bouton reconnexion (back-end intact) -->
+    <form action="$(link-login)" name="login" onsubmit="return openLogin()">
+      <button type="submit" class="btn-primary" id="btn-reconnect">
+        Se reconnecter
+      </button>
+    </form>
+  </div>
+
+  <div class="footer">Hotspot Zone · Accès Internet</div>
+</div>
+
+</body>
+</html>

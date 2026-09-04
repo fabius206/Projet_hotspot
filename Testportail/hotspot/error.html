@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<title>Hotspot Zone — Erreur</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="expires" content="no-cache" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div class="portal-bg"></div>
+
+<div class="wrap">
+  <div class="brand-top">Hotspot<span>Zone</span></div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon error">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </div>
+      <h1>Une erreur est survenue</h1>
+      <p>Impossible de traiter votre demande</p>
+    </div>
+
+    <!-- ═══ Message d'erreur MikroTik (back-end intact) ═══ -->
+    <div class="status-msg error show" id="error-detail">$(error)</div>
+    <!-- ════════════════════════════════════════════════════ -->
+
+    <!-- Lien vers la page de login (back-end intact) -->
+    <a href="$(link-login)" class="btn-primary" id="btn-retry" style="display:block;text-align:center;text-decoration:none;padding:13px;margin-top:6px;">
+      Retourner à la connexion
+    </a>
+  </div>
+
+  <div class="footer">Hotspot Zone · Accès Internet</div>
+</div>
+
+</body>
+</html>

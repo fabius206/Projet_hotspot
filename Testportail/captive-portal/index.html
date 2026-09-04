@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hotspot Zone — Connexion</title>
+<link rel="stylesheet" href="css/style.css?v=6">
+</head>
+<body>
+<div class="portal-bg"></div>
+<div class="wrap">
+  <div class="brand-top">Hotspot<span>Zone</span></div>
+  <div class="card">
+    <div class="card-head">
+      <div class="wifi-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r=".5" fill="currentColor"/></svg></div>
+      <h1>Bienvenue !</h1>
+      <p>Connectez-vous pour accéder à Internet</p>
+    </div>
+    <div id="status" class="status-msg"></div>
+    <form name="login" action="$(link-login-only)" method="post" class="portal-form" id="login-form">
+      <input type="hidden" name="dst" value="$(link-orig)">
+      <input type="hidden" name="popup" value="true">
+      <div class="field">
+        <div class="input-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <input type="text" name="username" id="username" placeholder="Nom d'utilisateur" autocomplete="username" required>
+        </div>
+      </div>
+      <div class="field">
+        <div class="input-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input type="password" name="password" id="code-pass" placeholder="Mot de passe">
+        </div>
+      </div>
+      <button type="submit" class="btn-primary">Se connecter</button>
+    </form>
+    <p class="terms">En vous connectant, vous acceptez nos <a href="#">conditions d'utilisation</a>.</p>
+  </div>
+  <div class="footer">Hotspot Zone - Accès Internet</div>
+</div>
+<script>
+// Voucher peut être saisi directement dans Nom d'utilisateur / Mot de passe
+document.forms.login.addEventListener('submit', function(){
+});
+</script>
+
+</html>
