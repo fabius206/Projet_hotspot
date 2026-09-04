@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paramètres — Hotspot Diego</title>
+<link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+<div class="tout">
+  <aside class="deuxieme">
+    <div class="title">Hotspot<span style="color:var(--coral)">Diego</span>
+      <small>Affichage</small>
+    </div>
+    <nav>
+<a href="dash.php">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Tableau de bord
+      </a>
+      <a href="clients.php">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Clients
+      </a>
+      <a href="codes.php" data-role="admin">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        Codes d'accès
+      </a>
+      <a href="sessions.php" data-role="admin">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Sessions
+      </a>
+      <a href="offres.php" data-role="admin">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+        Offres
+      </a>
+      <a href="comptes.php" data-role="admin">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+        Comptes
+      </a>
+      <a href="parametre.php" class="active">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+        Paramètre
+      </a>
+      <a href="../login_php/logout.php">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Déconnexion
+      </a>
+    </nav>
+  </aside>
+
+  <main class="main">
+
+    <div class="topbar">
+      <div>
+        <h1>Paramètres</h1>
+        <div class="subtitle">Gestion du compte administrateur</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button type="button" class="tab active" data-tab="profil">Profil</button>
+      <button type="button" class="tab" data-tab="securite">Sécurité</button>
+    </div>
+
+    <div id="tab-profil" class="tab-panel active">
+      <div class="card card-large">
+        <h3 style="margin-bottom:6px;">Profil</h3>
+        <p class="hint" style="margin-top:0;">Nom affiché de l'administrateur du back-office.</p>
+
+        <div id="message-nom" class="error-banner" style="display:none;"></div>
+
+        <form id="form-nom">
+          <div class="form-grid form-grid-2">
+            <div class="field">
+              <label for="nom-admin">Nom de l'administrateur</label>
+              <input type="text" id="nom-admin" required minlength="3">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Enregistrer le nom</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="tab-securite" class="tab-panel">
+      <div class="card card-large">
+        <h3 style="margin-bottom:6px;">Sécurité</h3>
+        <p class="hint" style="margin-top:0;">Modifiez le mot de passe de connexion au back-office.</p>
+
+        <div id="message" class="error-banner" style="display:none;"></div>
+
+        <form id="form-password">
+          <div class="form-grid">
+            <div class="field">
+              <label for="username">Identifiant admin</label>
+              <input type="text" id="username" autocomplete="username" required>
+            </div>
+            <div class="field">
+              <label for="current">Mot de passe actuel</label>
+              <input type="password" id="current" autocomplete="current-password" required>
+            </div>
+            <div class="field">
+              <label for="new">Nouveau mot de passe</label>
+              <input type="password" id="new" autocomplete="new-password" required minlength="6">
+            </div>
+            <div class="field">
+              <label for="confirm">Confirmer</label>
+              <input type="password" id="confirm" autocomplete="new-password" required minlength="6">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Enregistrer</button>
+        </form>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="../js/guard.js"></script>
+<script src="../js/parametre.js"></script>
+</body>
+</html>

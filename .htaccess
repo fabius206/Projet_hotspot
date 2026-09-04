@@ -1,3 +1,8 @@
 <IfModule mod_headers.c>
     Header set Cache-Control "no-cache, must-revalidate"
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "DENY"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
+DirectoryIndex index.php index.html
+Options -Indexes

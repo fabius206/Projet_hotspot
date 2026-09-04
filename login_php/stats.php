@@ -41,6 +41,32 @@ $semaine = $db->query(
    GROUP BY d.jour ORDER BY d.jour ASC"
 )->fetchAll(PDO::FETCH_ASSOC);
 
+// Fréquentation : nombre de codes créés par jour (7 derniers jours)
+$frequentation = $db->query(
+  "SELECT DATE_FORMAT(d.jour, '%d/%m') AS jour, COUNT(v.id) AS nb
+   FROM (
+     SELECT CURDATE() AS jour UNION SELECT DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+     UNION SELECT DATE_SUB(CURDATE(), INTERVAL 2 DAY) UNION SELECT DATE_SUB(CURDATE(), INTERVAL 3 DAY)
+     UNION SELECT DATE_SUB(CURDATE(), INTERVAL 4 DAY) UNION SELECT DATE_SUB(CURDATE(), INTERVAL 5 DAY)
+     UNION SELECT DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+   ) d
+   LEFT JOIN vouchers v ON DATE(v.created_at) = d.jour
+   GROUP BY d.jour ORDER BY d.jour ASC"
+)->fetchAll(PDO::FETCH_ASSOC);
+
+// Usage : répartition par statut déjà dans compteurs, + courbe d'usage heures (simulée via actifs)
+$usage = $db->query(
+  "SELECT DATE_FORMAT(d.jour, '%d/%m') AS jour, COUNT(CASE WHEN v.status='actif' THEN 1 END) AS actifs
+   FROM (
+     SELECT CURDATE() AS jour UNION SELECT DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+     UNION SELECT DATE_SUB(CURDATE(), INTERVAL 2 DAY) UNION SELECT DATE_SUB(CURDATE(), INTERVAL 3 DAY)
+     UNION SELECT DATE_SUB(CURDATE(), INTERVAL 4 DAY) UNION SELECT DATE_SUB(CURDATE(), INTERVAL 5 DAY)
+     UNION SELECT DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+   ) d
+   LEFT JOIN vouchers v ON DATE(v.used_at) = d.jour
+   GROUP BY d.jour ORDER BY d.jour ASC"
+)->fetchAll(PDO::FETCH_ASSOC);
+
 $offres = $db->query(
   'SELECT p.nom, COUNT(v.id) AS nb_codes, COALESCE(SUM(p.prix), 0) AS total
    FROM plans p
@@ -49,10 +75,19 @@ $offres = $db->query(
    ORDER BY total DESC'
 )->fetchAll(PDO::FETCH_ASSOC);
 
+$adminCount = (int)$db->query("SELECT COUNT(*) FROM admins")->fetchColumn();
+$superCount = (int)$db->query("SELECT COUNT(*) FROM admins WHERE role='super_admin'")->fetchColumn();
+$userCount = (int)$db->query("SELECT COUNT(*) FROM utilisateurs")->fetchColumn();
+
 echo json_encode([
   'compteurs' => $compteurs,
   'total_genere' => $totalGenere,
   'revenus_jour' => $revenusJour,
   'semaine' => $semaine,
+  'frequentation' => $frequentation,
+  'usage' => $usage,
   'offres' => $offres,
+  'admin_count' => $adminCount,
+  'super_count' => $superCount,
+  'user_count' => $userCount,
 ]);

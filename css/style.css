@@ -223,6 +223,9 @@ input:focus {
 
 /* --- Écran de connexion --- */
 .login-screen {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -231,7 +234,37 @@ input:focus {
   padding: 20px;
 }
 
+.login-screen::before,
+.login-screen::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.login-screen::before {
+  width: min(42vw, 420px);
+  height: min(42vw, 420px);
+  top: -12%;
+  left: -8%;
+  background: radial-gradient(circle at 35% 35%, rgba(23, 163, 152, 0.28), rgba(23, 163, 152, 0.04) 68%, transparent 70%);
+  box-shadow: 0 0 0 28px rgba(23, 163, 152, 0.035);
+}
+
+.login-screen::after {
+  width: min(34vw, 340px);
+  height: min(34vw, 340px);
+  right: -7%;
+  bottom: -13%;
+  background: radial-gradient(circle at 65% 35%, rgba(232, 98, 44, 0.3), rgba(232, 98, 44, 0.04) 68%, transparent 70%);
+  box-shadow: 0 0 0 22px rgba(232, 98, 44, 0.035);
+}
+
 .login-card {
+  position: relative;
+  z-index: 1;
   background: var(--paper);
   border-radius: 14px;
   padding: 40px 36px;
@@ -317,5 +350,30 @@ input:focus {
   *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  }
+
+  @media (max-width: 480px) {
+    .login-screen {
+      padding: 16px;
+    }
+
+    .login-card {
+      padding: 30px 22px;
+      border-radius: 12px;
+    }
+
+    .login-card .brand-mark {
+      font-size: 1.45rem;
+    }
+
+    .login-screen::before {
+      width: 260px;
+      height: 260px;
+    }
+
+    .login-screen::after {
+      width: 220px;
+      height: 220px;
+    }
   }
 }
