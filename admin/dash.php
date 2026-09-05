@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+<?php require_once __DIR__ . '/../login_php/_commun.php'; require_permission('dashboard'); ?>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">

@@ -80,6 +80,13 @@ fetch('../login_php/admin_info.php')
     if (admin && admin.username) {
       document.getElementById('nom-admin').value = admin.username;
     }
+    const metadata = {
+      'profile-role': admin.role || '',
+      'profile-status': admin.statut || 'actif',
+      'profile-created': admin.creation || '—',
+      'profile-last-login': admin.derniere_connexion || 'Jamais'
+    };
+    Object.entries(metadata).forEach(([id, value]) => { const el = document.getElementById(id); if (el) el.textContent = value; });
     const emailInput = document.getElementById('email-admin');
     const telephoneInput = document.getElementById('telephone-admin');
     if (emailInput) emailInput.value = admin.email || data.email || '';
@@ -98,7 +105,7 @@ fetch('../login_php/admin_info.php')
     } else {
       if (placeholder) {
         placeholder.textContent = '';
-        placeholder.style.display = 'none';
+        placeholder.style.display = 'flex';
       }
     }
   })
@@ -118,20 +125,26 @@ let pendingFile = null;
 function notifyAvatar(photoUrl) {
   const av = document.getElementById('avatar-initial');
   if (av) {
+    av.classList.add('avatar-switching');
+    requestAnimationFrame(() => {
     if (photoUrl) {
       av.innerHTML = '<img src="' + photoUrl + '" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
       av.style.display = 'flex';
       av.style.padding = '0';
       av.style.overflow = 'hidden';
+      av.classList.remove('generic-avatar');
       av.setAttribute('data-photo', photoUrl);
     } else {
       av.removeAttribute('data-photo');
       av.innerHTML = '';
       av.textContent = '';
-      av.style.display = 'none';
+      av.style.display = 'flex';
+      av.classList.add('generic-avatar');
       av.style.padding = '';
       av.style.background = '';
     }
+    requestAnimationFrame(() => av.classList.remove('avatar-switching'));
+    });
   }
   window.dispatchEvent(new CustomEvent('hotspot:avatar-updated', { detail: { photo: photoUrl || null } }));
 }
@@ -158,9 +171,11 @@ if(btnChoose && photoInput){
     const url = URL.createObjectURL(file);
     if (photoPreview.dataset.blob) URL.revokeObjectURL(photoPreview.dataset.blob);
     photoPreview.dataset.blob = url;
+    photoPreview.classList.add('photo-switching');
     photoPreview.src = url;
     photoPreview.style.display = 'block';
-    if(photoPlaceholder) photoPlaceholder.style.display = 'none';
+    photoPreview.onload = () => photoPreview.classList.remove('photo-switching');
+    if(photoPlaceholder) photoPlaceholder.style.display = 'flex';
     btnUpload.style.display = '';
     if(msgPhoto) msgPhoto.style.display='none';
   });
@@ -183,7 +198,9 @@ if(btnUpload){
       showPhotoMsg(data.message||'Photo mise à jour', true);
       if (data.photo) {
         if (photoPreview.dataset.blob) { URL.revokeObjectURL(photoPreview.dataset.blob); photoPreview.removeAttribute('data-blob'); }
+        photoPreview.classList.add('photo-switching');
         photoPreview.src = data.photo;   // URL serveur (fiable) au lieu du blob
+        photoPreview.onload = () => photoPreview.classList.remove('photo-switching');
       }
       currentPhoto = data.photo || currentPhoto;
       pendingFile = null;
@@ -212,7 +229,7 @@ if(btnRemove){
       photoPreview.style.display='none';
       if (photoPreview.dataset.blob) { URL.revokeObjectURL(photoPreview.dataset.blob); photoPreview.removeAttribute('data-blob'); }
       photoPreview.src='';
-      if(photoPlaceholder){ photoPlaceholder.style.display='none'; photoPlaceholder.textContent=''; }
+      if(photoPlaceholder){ photoPlaceholder.style.display='flex'; photoPlaceholder.textContent=''; }
       btnRemove.style.display='none';
       if(pendingFile){ pendingFile=null; photoInput.value=''; }
       notifyAvatar(null);               // masque l'avatar, sans refresh
@@ -331,6 +348,15 @@ if(selLang) {
 fetch('../login_php/settings.php').then(r=>r.json()).then(d=>{
   const hn = document.getElementById('hotspot-nom');
   if(hn && d.hotspot_nom) hn.value = d.hotspot_nom;
+  const values = {
+    'hotspot-description': d.hotspot_description,
+    'hotspot-message': d.hotspot_message_accueil,
+    'contact-email': d.contact_email,
+    'contact-telephone': d.contact_telephone,
+    'contact-adresse': d.contact_adresse,
+    'site-web': d.site_web
+  };
+  Object.entries(values).forEach(([id, value]) => { const el = document.getElementById(id); if (el && value) el.value = value; });
   if(selLang && d.systeme_langue && d.systeme_langue!==selLang.value){ selLang.value = d.systeme_langue; applyLang(d.systeme_langue); window.dispatchEvent(new CustomEvent('hotspot:lang-changed', {detail:{lang:d.systeme_langue}})); }
 }).catch(()=>{});
 const formGeneral = document.getElementById('form-general');
@@ -343,14 +369,26 @@ if(formGeneral){
     const msg = document.getElementById('message-general');
     btn.disabled = true;
     try{
-      const r = await fetch('../login_php/settings.php', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({hotspot_nom: hn, systeme_langue: lang})});
+      const r = await fetch('../login_php/settings.php', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({
+        hotspot_nom: hn, systeme_langue: lang,
+        hotspot_description: document.getElementById('hotspot-description').value.trim(),
+        hotspot_message_accueil: document.getElementById('hotspot-message').value.trim(),
+        contact_email: document.getElementById('contact-email').value.trim(),
+        contact_telephone: document.getElementById('contact-telephone').value.trim(),
+        contact_adresse: document.getElementById('contact-adresse').value.trim(),
+        site_web: document.getElementById('site-web').value.trim()
+      })});
       const d = await r.json().catch(()=>({}));
       if(!r.ok) throw new Error(d.error||'Erreur');
       applyLang(lang);
       window.dispatchEvent(new CustomEvent('hotspot:lang-changed', {detail:{lang}}));
       if(hn) localStorage.setItem('hotspot-nom', hn);
       const title = document.querySelector('.deuxieme .title');
-      if(title && hn) title.childNodes[0].textContent = hn;
+      if (title && hn) {
+        if (title.childNodes[0]) title.childNodes[0].textContent = 'Hotspot';
+        const brandName = title.querySelector('span');
+        if (brandName) brandName.textContent = hn;
+      }
     }catch(err){
       msg.textContent = err.message; msg.className='error-banner'; msg.style.display='block';
     }finally{ btn.disabled=false; }

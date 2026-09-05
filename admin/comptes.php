@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . '/../login_php/_commun.php'; require_permission('admins'); ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -37,7 +38,10 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
         Paramètre
       </a>
-      <a href="../login_php/logout.php">Déconnexion</a>
+      <a href="../login_php/logout.php">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Déconnexion
+      </a>
     </nav></aside>
   <main class="main">
     <div class="topbar"><div><h1>Comptes administrateurs</h1></div></div>
@@ -52,17 +56,18 @@
         <div style="display:grid;grid-template-columns:1.2fr 1fr 0.9fr;gap:12px;">
           <div class="field"><label>Identifiant *</label><input type="text" id="c-username" required placeholder="james"></div>
           <div class="field"><label>E-mail</label><input type="email" id="c-email" placeholder="admin@exemple.com"></div>
-          <div class="field"><label>Mot de passe *</label><input type="password" id="c-password" placeholder="••••••••"></div>
+          <div class="field"><label for="c-password">Mot de passe *</label><div class="password-field"><input type="password" id="c-password" placeholder="••••••••"><button type="button" class="password-toggle" data-password-target="c-password" aria-label="Afficher le mot de passe" title="Afficher le mot de passe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
           <div class="field"><label>Rôle</label><select id="c-role"><option value="admin">Admin</option><option value="super_admin">Super Admin</option></select></div>
         </div>
         <div style="display:flex;gap:8px;margin-top:12px;"><button type="submit" class="btn btn-primary" id="btn-submit">Créer le compte</button><button type="button" class="btn btn-outline" id="btn-cancel" style="display:none">Annuler</button></div>
       </form>
     </div>
-    <div class="card"><div class="table-responsive"><table id="table-comptes"><thead><tr><th>Identifiant</th><th>Rôle</th><th>Créé le</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div>
+    <div class="card"><div class="toolbar"><input id="admin-search" placeholder="Rechercher un nom ou email"><select id="admin-status-filter"><option value="">Tous les statuts</option><option value="actif">Actif</option><option value="inactif">Inactif</option><option value="bloque">Bloqué</option></select><button type="button" class="btn btn-outline" id="btn-audit">Journal d'activité</button></div><div class="table-responsive"><table id="table-comptes"><thead><tr><th>Administrateur</th><th>Rôle</th><th>Statut</th><th>Dernière connexion</th><th>Créé le</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div>
+    <div class="card" id="audit-card" style="display:none;margin-top:16px;"><h3>Journal d'activité</h3><div class="table-responsive"><table><thead><tr><th>Administrateur</th><th>Action</th><th>Cible</th><th>Résultat</th><th>IP</th><th>Date</th></tr></thead><tbody id="audit-rows"></tbody></table></div></div>
     <div id="modal-reset" class="modal-overlay" style="display:none;">
       <div class="modal">
         <div class="modal-header"><h3>Réinitialiser le mot de passe</h3><button type="button" class="modal-close" onclick="closeModal('modal-reset')">&times;</button></div>
-        <div class="modal-body"><label for="input-new-pwd">Nouveau mot de passe</label><input type="password" id="input-new-pwd" minlength="6" autocomplete="new-password"></div>
+        <div class="modal-body"><label for="input-new-pwd">Nouveau mot de passe</label><div class="password-field"><input type="password" id="input-new-pwd" minlength="8" autocomplete="new-password"><button type="button" class="password-toggle" data-password-target="input-new-pwd" aria-label="Afficher le mot de passe" title="Afficher le mot de passe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></div><small class="hint">8 caractères, majuscule, chiffre et caractère spécial.</small></div>
         <div class="modal-footer"><button type="button" class="btn btn-outline" onclick="closeModal('modal-reset')">Annuler</button><button type="button" class="btn btn-primary" id="btn-confirm-reset">Enregistrer</button></div>
       </div>
     </div>

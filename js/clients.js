@@ -230,9 +230,7 @@ document.getElementById('form-client').addEventListener('submit', async e => {
   let username = document.getElementById('cl-username')?.value.trim() || '';
   let password = document.getElementById('cl-password')?.value || '';
   const email = document.getElementById('cl-email').value.trim();
-  const country = document.getElementById('cl-country')?.value || '+261';
-  let telRaw = document.getElementById('cl-tel').value.replace(/[^0-9]/g,'').replace(/^0+/, '');
-  const telephone = telRaw ? country + telRaw : '';
+  const telephone = document.getElementById('cl-tel').value.replace(/[^0-9]/g,'').slice(0, 10);
   // Auto-génère identifiant/mot de passe si champs cachés vides
   if (!username) {
     username = nom.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'.').replace(/^\.+|\.+$/g,'');

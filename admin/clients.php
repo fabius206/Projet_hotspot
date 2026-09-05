@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . '/../login_php/_commun.php'; require_permission('clients'); ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -39,7 +40,10 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
         Paramètre
       </a>
-      <a href="../login_php/logout.php">Déconnexion</a>
+      <a href="../login_php/logout.php">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Déconnexion
+      </a>
     </nav></aside>
   <main class="main">
     <div class="topbar"><div><h1>Gestion des clients</h1><div class="subtitle">Comptes utilisateurs du hotspot</div></div>
@@ -58,8 +62,8 @@
           <div class="field"><label>Nom complet *</label><input type="text" id="cl-nom" required placeholder="Jean Rakoto"></div>
           <div class="field"><label>Email</label><input type="email" id="cl-email" placeholder="jean@email.com"></div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end;margin-top:12px;">
-          <div class="field client-phone-field"><label>Téléphone</label><div class="client-phone-input"><select id="cl-country"><option value="+261" selected>🇲🇬 +261</option><option value="+33">🇫🇷 +33</option></select><input type="tel" id="cl-tel" placeholder="32 12 345 67"></div></div>
+        <div style="display:flex;gap:0;align-items:end;margin-top:12px;flex-wrap:wrap;">
+          <div class="field client-phone-field" style="flex:0 1 280px;"><label for="cl-tel">Téléphone</label><div class="client-phone-input"><input type="tel" id="cl-tel" placeholder="032 12 345 67" inputmode="numeric"></div></div>
           <div class="field" style="display:flex;gap:8px;align-items:end;"><button type="submit" class="btn btn-primary" id="btn-submit">Créer le client</button><button type="button" class="btn btn-outline" id="btn-cancel" style="display:none">Annuler</button></div>
         </div>
         <input type="hidden" id="cl-username"><input type="hidden" id="cl-password">

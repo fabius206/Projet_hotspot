@@ -25,6 +25,7 @@ if (empty($_FILES) && $raw) {
       @unlink(__DIR__ . '/../uploads/avatars/' . $oldPhoto);
     }
     $db->prepare('UPDATE admins SET photo = NULL WHERE id = ?')->execute([$adminId]);
+    audit_log('profile.photo_remove', (string)$adminId);
     echo json_encode(['success' => true, 'message' => 'Photo retirée']);
     exit;
   }
@@ -84,5 +85,6 @@ if ($oldPhoto && file_exists($destDir . '/' . $oldPhoto)) {
 }
 
 $db->prepare('UPDATE admins SET photo = ? WHERE id = ?')->execute([$filename, $adminId]);
+audit_log('profile.photo_update', (string)$adminId, $filename);
 
 echo json_encode(['success' => true, 'message' => 'Photo mise à jour', 'photo' => '../uploads/avatars/' . $filename, 'filename' => $filename]);

@@ -16,6 +16,18 @@ function showMsg(t, ok) {
 window.showMessage = showMsg;
 window.showToast = showMsg;
 
+document.querySelectorAll('.password-toggle').forEach((toggle) => {
+  toggle.addEventListener('click', () => {
+    const input = document.getElementById(toggle.dataset.passwordTarget);
+    if (!input) return;
+    const visible = input.type === 'text';
+    input.type = visible ? 'password' : 'text';
+    toggle.setAttribute('aria-label', visible ? 'Afficher le mot de passe' : 'Masquer le mot de passe');
+    toggle.title = toggle.getAttribute('aria-label');
+    toggle.classList.toggle('is-visible', !visible);
+  });
+});
+
 function openModal(id) { document.getElementById(id).style.display = 'flex'; }
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
@@ -52,7 +64,12 @@ fetch('../login_php/check_session.php').then(r=>r.json()).then(d=>{
 }).catch(()=>{ roleReady = true; charger(); });
 
 async function charger() {
-  const r = await fetch('../login_php/admins.php');
+  const params = new URLSearchParams();
+  const q = document.getElementById('admin-search')?.value.trim();
+  const statut = document.getElementById('admin-status-filter')?.value;
+  if (q) params.set('q', q);
+  if (statut) params.set('statut', statut);
+  const r = await fetch('../login_php/admins.php?' + params.toString());
   if (r.status === 401 || r.status === 403) { window.location.replace('../index.php'); return; }
   const data = await r.json();
   const ct = document.getElementById('counter-admins');
@@ -75,13 +92,18 @@ async function charger() {
     <tr class="${isOwn ? 'row-own' : ''} ${locked ? 'row-locked' : ''}">
       <td style="display:flex;align-items:center;">${avatarHtml}<span>${esc(a.username)}${ownTag}</span></td>
       <td><span class="badge ${badgeClass}">${roleLabel}</span></td>
-      <td>${a.creation}</td>
+      <td><span class="badge ${a.statut === 'actif' ? 'badge-success' : 'badge-danger'}">${esc(a.statut || 'actif')}</span></td>
+      <td>${esc(a.derniere_connexion || 'Jamais')}</td>
+      <td>${esc(a.creation || '')}</td>
       <td style="white-space:nowrap;">
         <button class="btn btn-icon btn-sm" ${locked ? 'disabled' : ''} onclick="startEdit(${a.id}, '${a.username.replace(/'/g,"\\'")}', '${a.role}', '${(a.email || '').replace(/'/g,"\\'")}')" title="Modifier" aria-label="Modifier">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
         <button class="btn btn-icon btn-sm" ${locked || isOwn ? 'disabled' : ''} onclick="resetPwd(${a.id})" title="Mot de passe" aria-label="Mot de passe">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        </button>
+        <button class="btn btn-icon btn-sm" ${locked || isOwn ? 'disabled' : ''} onclick="changerStatut(${a.id}, '${a.statut === 'actif' ? 'inactif' : 'actif'}')" title="${a.statut === 'actif' ? 'Désactiver' : 'Activer'}" aria-label="${a.statut === 'actif' ? 'Désactiver' : 'Activer'}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">${a.statut === 'actif' ? '<circle cx="12" cy="12" r="9"/><path d="M8 8l8 8M16 8l-8 8"/>' : '<path d="M5 12a7 7 0 0 1 12-5l2 2"/><path d="M19 5v5h-5"/><path d="M19 12a7 7 0 0 1-12 5l-2-2"/><path d="M5 19v-5h5"/>'}</svg>
         </button>
         <button class="btn btn-icon btn-danger-icon btn-sm" ${locked || isOwn ? 'disabled' : ''} onclick="supprimer(${a.id})" title="Supprimer" aria-label="Supprimer">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
@@ -138,7 +160,7 @@ function resetPwd(id) {
 
 document.getElementById('btn-confirm-reset')?.addEventListener('click', async () => {
   const pwd = document.getElementById('input-new-pwd').value;
-  if (pwd.length < 6) { showMsg('Mot de passe trop court', false); return; }
+  if (pwd.length < 8 || !/[A-Z]/.test(pwd) || !/[a-z]/.test(pwd) || !/\d/.test(pwd) || !/[^A-Za-z0-9]/.test(pwd)) { showMsg('Mot de passe : 8 caractères, majuscule, minuscule, chiffre et caractère spécial requis', false); return; }
   closeModal('modal-reset');
   const r = await fetch('../login_php/admins.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'reset_password', id: currentActionId, password: pwd}) });
   const data = await r.json().catch(()=>({}));
@@ -197,11 +219,33 @@ document.getElementById('form-compte').addEventListener('submit', async (e) => {
     document.getElementById('btn-cancel').click();
     charger();
   } else {
-    if (!password || password.length < 6) { showMsg('Mot de passe 6 caractères minimum', false); return; }
+    if (!password || password.length < 8 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/\d/.test(password) || !/[^A-Za-z0-9]/.test(password)) { showMsg('Mot de passe : 8 caractères, majuscule, minuscule, chiffre et caractère spécial requis', false); return; }
     const r = await fetch('../login_php/admins.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'creer', username, email, password, role}) });
     const data = await r.json().catch(()=>({}));
     showMsg(data.message || data.error, r.ok);
     if (r.ok) { e.target.reset(); charger(); }
   }
+});
+
+async function changerStatut(id, statut) {
+  if (typeof window.showConfirm === 'function' && !(await window.showConfirm('Le statut du compte sera modifié.', { title: 'Modifier le statut ?' }))) return;
+  const r = await fetch('../login_php/admins.php', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({action:'statut', id, statut}) });
+  const data = await r.json().catch(()=>({}));
+  showMsg(data.message || data.error, r.ok);
+  if (r.ok) charger();
+}
+
+document.getElementById('admin-search')?.addEventListener('input', () => charger());
+document.getElementById('admin-status-filter')?.addEventListener('change', () => charger());
+document.getElementById('btn-audit')?.addEventListener('click', async () => {
+  const card = document.getElementById('audit-card');
+  const rows = document.getElementById('audit-rows');
+  if (!card || !rows) return;
+  card.style.display = 'block';
+  rows.innerHTML = '<tr><td colspan="6">Chargement…</td></tr>';
+  const r = await fetch('../login_php/audit.php');
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) { rows.innerHTML = `<tr><td colspan="6">${esc(data.error || 'Journal indisponible')}</td></tr>`; return; }
+  rows.innerHTML = (data.logs || []).map(log => `<tr><td>${esc(log.username || 'Système')}</td><td>${esc(log.action)}</td><td>${esc(log.cible || '—')}</td><td>${esc(log.resultat)}</td><td>${esc(log.ip_address || '—')}</td><td>${esc(log.created_at)}</td></tr>`).join('') || '<tr><td colspan="6">Aucune activité enregistrée.</td></tr>';
 });
 // Premier chargement via le fetch du rôle ci-dessus (pas besoin d'appel direct)

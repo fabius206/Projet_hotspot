@@ -3,6 +3,8 @@ require_once __DIR__ . '/_commun.php';
 security_headers();
 
 // Détruit proprement la session + cookie
+$logoutAdminId = $_SESSION['admin_id'] ?? $_SESSION['user_id'] ?? null;
+if ($logoutAdminId) audit_log('auth.logout', (string)$logoutAdminId);
 $_SESSION = [];
 if (ini_get('session.use_cookies')) {
   $params = session_get_cookie_params();

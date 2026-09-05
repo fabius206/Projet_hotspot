@@ -3,11 +3,12 @@ require_once __DIR__ . '/_commun.php';
 security_headers();
 header('Content-Type: application/json');
 require_admin();
+ensure_admin_schema();
 
 $adminId = (int)($_SESSION['admin_id'] ?? $_SESSION['user_id'] ?? 0);
 $db = db();
 $db->exec("ALTER TABLE admins ADD COLUMN IF NOT EXISTS telephone VARCHAR(30) NULL");
-$stmt = $db->prepare('SELECT id, username, email, telephone, role, photo, creation FROM admins WHERE id = ?');
+$stmt = $db->prepare('SELECT id, username, email, telephone, role, photo, creation, statut, derniere_connexion, permissions FROM admins WHERE id = ?');
 $stmt->execute([$adminId]);
 $admin = $stmt->fetch();
 
@@ -37,6 +38,9 @@ echo json_encode([
     'role' => $admin['role'],
     'photo' => $photoUrl,
     'creation' => $admin['creation']
+    , 'statut' => $admin['statut'] ?? 'actif'
+    , 'derniere_connexion' => $admin['derniere_connexion']
+    , 'permissions' => $admin['permissions'] ? json_decode($admin['permissions'], true) : []
   ],
   // compat ancien JS
   'username' => $admin['username'],

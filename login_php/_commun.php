@@ -204,6 +204,99 @@ function require_admin() {
   $_SESSION['last_activity'] = time();
 }
 
+function ensure_admin_schema() {
+  static $ready = false;
+  if ($ready) return;
+  $db = db();
+  $columns = [
+    "ALTER TABLE admins ADD COLUMN IF NOT EXISTS statut VARCHAR(20) NOT NULL DEFAULT 'actif'",
+    "ALTER TABLE admins ADD COLUMN IF NOT EXISTS derniere_connexion DATETIME NULL",
+    "ALTER TABLE admins ADD COLUMN IF NOT EXISTS permissions TEXT NULL",
+  ];
+  foreach ($columns as $sql) {
+    try { $db->exec($sql); } catch (Throwable $e) { /* compatible avec les schémas existants */ }
+  }
+  try {
+    $db->exec("CREATE TABLE IF NOT EXISTS audit_logs (
+      id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+      admin_id INT NULL,
+      action VARCHAR(120) NOT NULL,
+      cible VARCHAR(120) NULL,
+      details TEXT NULL,
+      ip_address VARCHAR(45) NULL,
+      resultat VARCHAR(20) NOT NULL DEFAULT 'success',
+      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      INDEX idx_audit_created (created_at),
+      INDEX idx_audit_admin (admin_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+  } catch (Throwable $e) {}
+  try {
+    $db->exec("CREATE TABLE IF NOT EXISTS app_settings (
+      setting_key VARCHAR(100) PRIMARY KEY,
+      setting_value TEXT NULL,
+      category VARCHAR(40) NOT NULL DEFAULT 'general',
+      updated_by INT NULL,
+      updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+  } catch (Throwable $e) {}
+  $ready = true;
+}
+
+function audit_log($action, $cible = null, $details = null, $resultat = 'success') {
+  ensure_admin_schema();
+  try {
+    db()->prepare('INSERT INTO audit_logs (admin_id, action, cible, details, ip_address, resultat) VALUES (?, ?, ?, ?, ?, ?)')
+      ->execute([(int)($_SESSION['admin_id'] ?? $_SESSION['user_id'] ?? 0) ?: null, $action, $cible, $details, $_SERVER['REMOTE_ADDR'] ?? null, $resultat]);
+  } catch (Throwable $e) {}
+}
+
+function require_permission($permission) {
+  require_admin();
+  ensure_admin_schema();
+  $role = $_SESSION['role'] ?? '';
+  if ($role === 'super_admin') return;
+  $adminId = (int)($_SESSION['admin_id'] ?? $_SESSION['user_id'] ?? 0);
+  if ($adminId > 0) {
+    $stmt = db()->prepare('SELECT permissions FROM admins WHERE id = ?');
+    $stmt->execute([$adminId]);
+    $custom = json_decode((string)$stmt->fetchColumn(), true);
+    if (is_array($custom) && array_key_exists($permission, $custom)) {
+      if ($custom[$permission] === true) return;
+      http_response_code(403);
+      header('Content-Type: application/json');
+      echo json_encode(['error' => 'Accès refusé pour cette permission']);
+      exit;
+    }
+
+    function valid_password($password) {
+      return is_string($password)
+        && strlen($password) >= 8
+        && preg_match('/[A-Z]/', $password)
+        && preg_match('/[a-z]/', $password)
+        && preg_match('/\d/', $password)
+        && preg_match('/[^A-Za-z0-9]/', $password);
+    }
+  }
+  $defaults = [
+    'dashboard' => ['admin', 'operateur'],
+    'clients' => ['admin', 'operateur'],
+    'vouchers' => ['admin', 'operateur'],
+    'sessions' => ['admin', 'operateur'],
+    'stats' => ['admin', 'operateur'],
+    'routeur' => ['admin'],
+    'admins' => [],
+    'settings' => ['admin'],
+    'profile' => ['admin', 'operateur'],
+  ];
+  if (!in_array($role, $defaults[$permission] ?? [], true)) {
+    audit_log('access.denied', $permission, 'Permission insuffisante', 'failure');
+    http_response_code(403);
+    header('Content-Type: application/json');
+    echo json_encode(['error' => 'Accès refusé pour votre rôle']);
+    exit;
+  }
+}
+
 function require_role($roles = []) {
   require_admin();
   $role = $_SESSION['role'] ?? '';

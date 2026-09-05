@@ -14,9 +14,9 @@ if ($username === '' || $currentPassword === '' || $newPassword === '') {
   echo json_encode(['error' => 'Tous les champs sont requis']);
   exit;
 }
-if (strlen($newPassword) < 6) {
+if (!valid_password($newPassword)) {
   http_response_code(400);
-  echo json_encode(['error' => 'Le nouveau mot de passe doit contenir au moins 6 caracteres']);
+  echo json_encode(['error' => 'Mot de passe : 8 caractères, majuscule, minuscule, chiffre et caractère spécial requis']);
   exit;
 }
 
@@ -49,5 +49,6 @@ if (password_verify($newPassword, $admin['password'])) {
 
 $update = $db->prepare('UPDATE admins SET password = ? WHERE id = ?');
 $update->execute([password_hash($newPassword, PASSWORD_DEFAULT), $adminId]);
+audit_log('profile.password_change', (string)$adminId);
 
 echo json_encode(['success' => true, 'message' => 'Mot de passe mis a jour avec succes']);

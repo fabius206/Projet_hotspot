@@ -16,6 +16,42 @@ window.addEventListener('popstate', () => {
   if(!window.__guard_init) window.__guard_init = true;
 })();
 
+// Sidebar compacte : l'état est conservé entre les pages du back-office.
+(function initSidebar() {
+  const sidebar = document.querySelector('.deuxieme');
+  if (!sidebar) return;
+  const navLinks = sidebar.querySelectorAll('nav a');
+  navLinks.forEach((link) => {
+    if (!link.getAttribute('title')) link.setAttribute('title', link.textContent.trim());
+    if (!link.getAttribute('aria-label')) link.setAttribute('aria-label', link.textContent.trim());
+  });
+  let collapsed = false;
+  try { collapsed = localStorage.getItem('hotspot-sidebar-collapsed') === '1'; } catch (e) {}
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'sidebar-toggle';
+  button.setAttribute('aria-label', collapsed ? 'Agrandir la barre latérale' : 'Réduire la barre latérale');
+  button.title = button.getAttribute('aria-label');
+  button.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="' + (collapsed ? '9 18 15 12 9 6' : '15 18 9 12 15 6') + '"></polyline></svg><span class="sidebar-toggle-label">' + (collapsed ? 'Agrandir' : 'Réduire') + '</span>';
+  const settingsLink = sidebar.querySelector('a[href*="parametre.php"]');
+  const nav = sidebar.querySelector('nav');
+  if (settingsLink) nav.insertBefore(button, settingsLink);
+  else sidebar.insertBefore(button, nav);
+  const apply = (value) => {
+    sidebar.classList.toggle('is-collapsed', value);
+    button.setAttribute('aria-label', value ? 'Agrandir la barre latérale' : 'Réduire la barre latérale');
+    button.title = button.getAttribute('aria-label');
+    button.querySelector('polyline').setAttribute('points', value ? '9 18 15 12 9 6' : '15 18 9 12 15 6');
+    button.querySelector('.sidebar-toggle-label').textContent = value ? 'Agrandir' : 'Réduire';
+  };
+  apply(collapsed);
+  button.addEventListener('click', () => {
+    collapsed = !collapsed;
+    try { localStorage.setItem('hotspot-sidebar-collapsed', collapsed ? '1' : '0'); } catch (e) {}
+    apply(collapsed);
+  });
+})();
+
 // ===== LANGUE : init globale + persistance =====
 const i18nGlobal = {
   fr: { dash:"Tableau de bord", clients:"Clients", codes:"Codes d'accès", vouchers:"Vouchers", sessions:"Sessions", routeur:"MikroTik", stats:"Statistiques", offres:"Offres", comptes:"Comptes", param:"Paramètre", logout:"Déconnexion", search:"Rechercher", tous:"Tous les statuts", actif:"Actif", suspendu:"Suspendu", affichage:"Affichage",
@@ -80,9 +116,11 @@ function applyGlobalLang(l){
   // Marque + Affichage — Hotspot Diego reste la marque, Affichage se traduit
   const brand = document.querySelector('.deuxieme .title');
   if(brand){
-    // Si un nom custom est stocké, l'afficher, sinon garder Hotspot Diego
+    // Conserve la marque "Hotspot" et applique le nom personnalisé uniquement à "Diego".
     const custom = localStorage.getItem('hotspot-nom');
-    if(custom && brand.childNodes[0]) brand.childNodes[0].textContent = custom;
+    const brandName = brand.querySelector('span');
+    if (brand.childNodes[0]) brand.childNodes[0].textContent = 'Hotspot';
+    if (brandName) brandName.textContent = custom || 'Diego';
   }
   const smallAff = document.querySelector('.deuxieme .title small');
   if(smallAff) smallAff.textContent = t.affichage;
@@ -200,7 +238,11 @@ function applyGlobalLang(l){
       if(d.hotspot_nom){
         localStorage.setItem('hotspot-nom', d.hotspot_nom);
         const brand = document.querySelector('.deuxieme .title');
-        if(brand && brand.childNodes[0]) brand.childNodes[0].textContent = d.hotspot_nom;
+        if (brand) {
+          if (brand.childNodes[0]) brand.childNodes[0].textContent = 'Hotspot';
+          const brandName = brand.querySelector('span');
+          if (brandName) brandName.textContent = d.hotspot_nom;
+        }
       }
       if(d.systeme_langue && ['fr','en','mg'].includes(d.systeme_langue) && d.systeme_langue!==saved){
         applyGlobalLang(d.systeme_langue);
@@ -320,15 +362,15 @@ fetch('../login_php/check_session.php', { credentials: 'same-origin' })
         const rawName = data.username || '';
         // Essaie de récupérer l'email via admin_info si dispo
         hpName.textContent = rawName;
-        if(hpAvatar) hpAvatar.textContent = (rawName.trim().charAt(0) || 'N').toUpperCase();
+        if(hpAvatar) setGenericAvatar(hpAvatar);
         // fetch email en plus
         fetch('../login_php/admin_info.php', {credentials:'same-origin'}).then(r=>r.json()).then(info=>{
           const adm = info.admin || info;
           if(adm && adm.photo && hpAvatar){
             hpAvatar.innerHTML = '<img src="'+adm.photo+'" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
             hpAvatar.style.padding='0'; hpAvatar.style.overflow='hidden';
-          } else if(hpAvatar && hpName.textContent){
-            hpAvatar.textContent = hpName.textContent.trim().charAt(0).toUpperCase();
+          } else if(hpAvatar){
+            setGenericAvatar(hpAvatar);
           }
           if(adm && adm.email && hpEmail) hpEmail.textContent = adm.email;
           else if(adm && adm.username && hpEmail) hpEmail.textContent = adm.username.includes('@') ? adm.username : '';
@@ -340,6 +382,13 @@ fetch('../login_php/check_session.php', { credentials: 'same-origin' })
         });
       }
     })();
+
+    function setGenericAvatar(element) {
+      element.textContent = '';
+      element.innerHTML = '';
+      element.classList.add('generic-avatar');
+      element.setAttribute('aria-label', 'Avatar générique');
+    }
 
     // Sidebar badge retiré sur demande — infos utilisateur affichées uniquement dans le header
     // badge sidebar supprimé — pas d'insertion
@@ -560,7 +609,7 @@ window.showToast = function(text, ok = true) {
     container.id = 'toast-container';
     container.className = 'toast-container';
     container.setAttribute('role', 'status');
-    container.innerHTML = '<span id="toast-text"></span>';
+    container.innerHTML = '<span class="toast-icon" aria-hidden="true"></span><span id="toast-text"></span><button type="button" class="toast-close" aria-label="Fermer">&times;</button><span class="toast-progress" aria-hidden="true"></span>';
     document.body.appendChild(container);
   }
   let textEl = container.querySelector('#toast-text');
@@ -576,6 +625,16 @@ window.showToast = function(text, ok = true) {
   const cls = isErr ? 'toast-error' : (isWarn ? 'toast-warn' : (isInfo ? 'toast-info' : 'toast-success'));
   container.className = 'toast-container ' + cls;
   container.style.display = 'flex';
+  const icon = container.querySelector('.toast-icon');
+  if (icon) icon.textContent = isErr ? '!' : (isWarn ? '!' : (isInfo ? 'i' : '✓'));
+  const close = container.querySelector('.toast-close');
+  if (close) close.onclick = () => { container.style.display = 'none'; };
+  const progress = container.querySelector('.toast-progress');
+  if (progress) {
+    progress.style.animation = 'none';
+    void progress.offsetWidth;
+    progress.style.animation = 'toast-progress 4.5s linear forwards';
+  }
   clearTimeout(container._toastTimer);
   container._toastTimer = setTimeout(() => {
     container.style.display = 'none';

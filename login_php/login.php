@@ -59,7 +59,8 @@ if (mb_strlen($username) < 2 || mb_strlen($password) < 2) {
 $dummyHash = '$2y$10$usesomesillystringfore7hnbQJ5vQvzQvQvzQvQvzQvQvzQvQvzQ';
 
 // 1) Cherche dans admins
-$stmt = db()->prepare('SELECT id, username, password, role FROM admins WHERE username = ? LIMIT 1');
+ensure_admin_schema();
+$stmt = db()->prepare('SELECT id, username, password, role, statut FROM admins WHERE username = ? LIMIT 1');
 $stmt->execute([$username]);
 $admin = $stmt->fetch();
 
@@ -89,6 +90,13 @@ if ($admin) {
 }
 
 if ($ok && $account) {
+  if ($accountType === 'admin' && ($account['statut'] ?? 'actif') !== 'actif') {
+    rate_limit_hit(5, 300);
+    audit_log('auth.login', (string)$account['id'], 'Compte administrateur inactif', 'failure');
+    http_response_code(403);
+    echo json_encode(['error' => 'Ce compte administrateur est inactif.']);
+    exit;
+  }
   // Vérifie statut suspendu (utilisateurs seulement)
   if ($accountType === 'utilisateur' && ($account['statut'] ?? 'actif') === 'suspendu') {
     rate_limit_hit(5, 300);
@@ -119,6 +127,8 @@ if ($ok && $account) {
   $_SESSION['login_ua'] = substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 255);
 
   if ($accountType === 'admin') {
+    db()->prepare('UPDATE admins SET derniere_connexion = NOW() WHERE id = ?')->execute([$account['id']]);
+    audit_log('auth.login', (string)$account['id'], 'Connexion réussie');
     $_SESSION['role'] = $account['role'];
     $_SESSION['user_type'] = 'admin';
     $_SESSION['admin_id'] = (int)$account['id'];

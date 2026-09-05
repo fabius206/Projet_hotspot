@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+<?php require_once __DIR__ . '/../login_php/_commun.php'; require_permission('profile'); ?>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -61,6 +62,7 @@
     <div class="tabs">
       <button type="button" class="tab active" data-tab="profil">Profil</button>
       <button type="button" class="tab" data-tab="securite">Sécurité</button>
+      <button type="button" class="tab" data-tab="general">Hotspot</button>
       <button type="button" class="tab" data-tab="apparence">Apparence</button>
     </div>
 
@@ -68,12 +70,18 @@
       <div class="card card-large">
         <h3 style="margin-bottom:6px;">Profil</h3>
         <p class="hint" style="margin-top:0;">Gérez votre photo et votre nom d'affichage dans le back-office.</p>
+        <div class="profile-meta-grid">
+          <div><span class="hint">Rôle</span><strong id="profile-role">—</strong></div>
+          <div><span class="hint">Statut</span><strong id="profile-status">—</strong></div>
+          <div><span class="hint">Créé le</span><strong id="profile-created">—</strong></div>
+          <div><span class="hint">Dernière connexion</span><strong id="profile-last-login">—</strong></div>
+        </div>
 
         <div id="message-nom" class="error-banner" style="display:none;"></div>
 
         <div class="admin-profile-photo">
           <div class="admin-photo-preview">
-            <span id="photo-placeholder" aria-hidden="true"></span>
+            <span id="photo-placeholder" class="generic-avatar" aria-label="Avatar générique"></span>
             <img id="photo-preview" alt="Photo de profil" style="display:none;">
           </div>
           <div class="admin-photo-controls">
@@ -86,6 +94,27 @@
               <button type="button" class="btn btn-outline" id="btn-remove-photo" style="display:none;">Retirer</button>
             </div>
             <div id="message-photo" class="photo-message" style="display:none;"></div>
+          </div>
+        </div>
+
+        <div id="tab-general" class="tab-panel">
+          <div class="card card-large">
+            <h3>Paramètres du hotspot</h3>
+            <p class="hint">Ces informations sont enregistrées dans la base et peuvent être utilisées par le portail captif.</p>
+            <div id="message-general" class="error-banner" style="display:none;"></div>
+            <form id="form-general">
+              <div class="form-grid form-grid-2">
+                <div class="field"><label for="hotspot-nom">Nom du hotspot</label><input id="hotspot-nom" maxlength="50" required></div>
+                <div class="field"><label for="systeme-langue">Langue</label><select id="systeme-langue"><option value="fr">Français</option><option value="en">English</option><option value="mg">Malagasy</option></select></div>
+                <div class="field"><label for="hotspot-description">Description</label><input id="hotspot-description" maxlength="255"></div>
+                <div class="field"><label for="hotspot-message">Message d'accueil</label><input id="hotspot-message" maxlength="255"></div>
+                <div class="field"><label for="contact-email">Email de contact</label><input type="email" id="contact-email"></div>
+                <div class="field"><label for="contact-telephone">Téléphone de contact</label><input id="contact-telephone" maxlength="30"></div>
+                <div class="field"><label for="contact-adresse">Adresse</label><input id="contact-adresse" maxlength="255"></div>
+                <div class="field"><label for="site-web">Site web</label><input type="url" id="site-web" placeholder="https://"></div>
+              </div>
+              <button type="submit" class="btn btn-primary">Enregistrer les paramètres</button>
+            </form>
           </div>
         </div>
 
@@ -104,6 +133,7 @@
               <input type="tel" id="telephone-admin" autocomplete="tel" inputmode="numeric" maxlength="13" placeholder="032 45 678 12">
             </div>
           </div>
+          <p class="hint">Sécurité : utilisez au moins 8 caractères, avec une majuscule, un chiffre et un caractère spécial.</p>
           <button type="submit" class="btn btn-primary">Enregistrer le profil</button>
         </form>
       </div>

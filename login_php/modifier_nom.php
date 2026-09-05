@@ -55,6 +55,7 @@ if ($check->fetch()) {
 
 $update = $db->prepare('UPDATE admins SET username = ?, email = ?, telephone = ? WHERE id = ?');
 $update->execute([$newUsername, $email !== '' ? $email : null, $telephone !== '' ? $telephone : null, $adminId]);
+audit_log('profile.update', (string)$adminId, $newUsername);
 
 // Met à jour la session
 $_SESSION['username'] = $newUsername;

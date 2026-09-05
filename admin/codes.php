@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+<?php require_once __DIR__ . '/../login_php/_commun.php'; require_permission('vouchers'); ?>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -61,14 +62,28 @@
 
     <div id="message" class="error-banner" style="display:none;"></div>
 
-    <div class="card" style="margin-bottom:16px;">
-      <form id="form-generer" class="toolbar" style="margin-bottom:0;">
-        <strong>Générer des codes</strong>
-        <select id="plan-select" required></select>
-        <input type="number" id="quantite" min="1" max="200" value="10" required title="Quantité">
-        <button type="submit" class="btn btn-primary">Générer</button>
+    <div class="card code-generator-card" style="margin-bottom:16px;">
+      <div class="code-generator-heading">
+        <div>
+          <h3>Générer des codes</h3>
+          <p>Choisissez une offre et le nombre de vouchers à créer.</p>
+        </div>
+        <span class="code-generator-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h10M4 17h16"/><path d="M18 10v8m-4-4h8"/></svg>
+        </span>
+      </div>
+      <form id="form-generer" class="code-generator-form">
+        <div class="code-generator-field code-generator-plan">
+          <label for="plan-select">Offre</label>
+          <select id="plan-select" required></select>
+        </div>
+        <div class="code-generator-field code-generator-quantity">
+          <label for="quantite">Quantité</label>
+          <input type="number" id="quantite" min="1" max="200" value="10" required title="Quantité">
+        </div>
+        <button type="submit" class="btn btn-primary">Générer les codes</button>
       </form>
-      <div id="codes-genere" style="margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;"></div>
+      <div id="codes-genere" class="generated-codes"></div>
     </div>
 
     <div class="card">
